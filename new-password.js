@@ -39,17 +39,26 @@ const confirmPasswordInput = form.querySelector('input[name="confirmPassword"]')
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if (passwordInput.value !== confirmPasswordInput.value) {
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+    // التحقق من طول كلمة المرور
+    if (password.length < 8) {
+        alert('Password must be at least 8 characters long.');
+        return;
+    }
+
+    if (password !== confirmPassword) {
         alert('Passwords do not match');
         return;
     }
 
     try {
-        // Verify the password reset code is valid
+        // التحقق من صحة رمز إعادة تعيين كلمة المرور
         await auth.verifyPasswordResetCode(actionCode);
         
-        // Confirm the password reset
-        await auth.confirmPasswordReset(actionCode, passwordInput.value);
+        // تأكيد إعادة تعيين كلمة المرور
+        await auth.confirmPasswordReset(actionCode, password);
         
         alert('Password has been updated successfully!');
         window.location.href = 'login.html';
@@ -65,7 +74,7 @@ form.addEventListener('submit', async (e) => {
                 errorMessage = 'Invalid password reset link. Please request a new one.';
                 break;
             case 'auth/weak-password':
-                errorMessage = 'Password should be at least 6 characters.';
+                errorMessage = 'Password must be at least 8 characters long.';
                 break;
         }
         

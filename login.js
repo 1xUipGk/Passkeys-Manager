@@ -25,21 +25,46 @@ const loginForm = document.querySelector('.login-form');
 googleBtn.addEventListener('click', async () => {
     try {
         const provider = new firebase.auth.GoogleAuthProvider();
-        await auth.signInWithRedirect(provider);
-    } catch (error) {
-        console.error('Error with Google auth:', error);
-        alert('Error signing in with Google. Please try again.');
-    }
-});
+        provider.addScope('profile');
+        provider.addScope('email');
+        
+        provider.setCustomParameters({
+            'locale': navigator.language || 'en'
+        });
 
-// Handle redirect result
-auth.getRedirectResult().then((result) => {
-    if (result.user) {
-        localStorage.setItem('user', JSON.stringify(result.user));
+        const result = await auth.signInWithPopup(provider);
+        
+        const user = result.user;
+        localStorage.setItem('user', JSON.stringify({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL
+        }));
+
+        showMessage('Login successful!', 'success');
+        
         window.location.href = 'dashboard.html';
+    } catch (error) {
+        console.error('Google Sign In Error:', error);
+        
+        let errorMessage = 'Error signing in with Google.';
+        switch (error.code) {
+            case 'auth/popup-blocked':
+                errorMessage = 'Please allow popups for this website and try again.';
+                break;
+            case 'auth/popup-closed-by-user':
+                errorMessage = 'Sign in was cancelled. Please try again.';
+                break;
+            case 'auth/account-exists-with-different-credential':
+                errorMessage = 'An account already exists with this email using a different sign-in method.';
+                break;
+            default:
+                errorMessage = error.message;
+        }
+        
+        showMessage(errorMessage, 'error');
     }
-}).catch((error) => {
-    console.error('Redirect error:', error);
 });
 
 // Email/Password Sign In
@@ -48,6 +73,12 @@ loginForm.addEventListener('submit', async (e) => {
     
     const email = loginForm.querySelector('input[type="email"]').value;
     const password = loginForm.querySelector('input[type="password"]').value;
+
+    // التحقق من طول كلمة المرور
+    if (password.length < 8) {
+        showMessage('Password must be at least 8 characters long.');
+        return;
+    }
     
     try {
         const result = await auth.signInWithEmailAndPassword(email, password);
@@ -86,9 +117,5 @@ function showMessage(message, type = 'error') {
     const messageContainer = document.querySelector('.message-container');
     messageContainer.textContent = message;
     messageContainer.className = `message-container ${type}`;
-    
-    // إخفاء الرسالة بعد 5 ثواني
-    setTimeout(() => {
-        messageContainer.style.display = 'none';
-    }, 5000);
+    messageContainer.style.display = 'block';
 } 

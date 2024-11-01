@@ -29,6 +29,9 @@ const modalSearchInput = document.querySelector('.search-section input');
 const addNewAppBtn = document.querySelector('.add-new-app');
 const logoutBtn = document.querySelector('.logout-btn');
 const appsList = document.querySelector('.apps-list');
+const modalToggleBtn = document.querySelector('.toggle-password');
+const modalPasswordInput = document.querySelector('input[name="password"]');
+const toastContainer = document.querySelector('.toast-container');
 
 let isSubmitting = false; // Flag to prevent multiple submissions
 
@@ -37,15 +40,24 @@ addPasswordBtn.addEventListener('click', () => {
     modal.classList.add('active');
     passwordForm.reset();
     
-    // إعادة تعيين أيقونة العين
-    const toggleIcon = modalToggleBtn.querySelector('.material-symbols-outlined');
-    toggleIcon.textContent = 'visibility_off';
-    modalToggleBtn.classList.remove('active');
-    modalPasswordInput.setAttribute('type', 'password');
+    // Only try to reset the toggle button if it exists
+    if (modalToggleBtn) {
+        const toggleIcon = modalToggleBtn.querySelector('.material-symbols-outlined');
+        if (toggleIcon) {
+            toggleIcon.textContent = 'visibility_off';
+            modalToggleBtn.classList.remove('active');
+        }
+    }
+    
+    if (modalPasswordInput) {
+        modalPasswordInput.setAttribute('type', 'password');
+    }
     
     // Reset the form state
     const saveBtn = passwordForm.querySelector('.save-btn');
-    saveBtn.textContent = 'Save';
+    if (saveBtn) {
+        saveBtn.textContent = 'Save';
+    }
     delete passwordForm.dataset.editId;
 });
 
@@ -62,7 +74,7 @@ generateBtn.addEventListener('click', () => {
 function generatePassword() {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
     let password = '';
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 12; i++) {
         password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return password;
@@ -73,10 +85,16 @@ passwordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const modalElement = document.getElementById('addPasswordModal');
+    const password = passwordForm.querySelector('input[name="password"]').value;
+    const editId = passwordForm.dataset.editId;
 
     try {
         if (!auth.currentUser) {
             throw new Error('You must be logged in to save passwords');
+        }
+
+        if (password.length < 8) {
+            throw new Error('Password must be at least 8 characters long');
         }
 
         const userId = auth.currentUser.uid;
@@ -84,27 +102,38 @@ passwordForm.addEventListener('submit', async (e) => {
             appName: modalSearchInput.value.trim(),
             username: passwordForm.querySelector('input[name="username"]').value.trim(),
             email: passwordForm.querySelector('input[name="email"]').value.trim(),
-            password: passwordForm.querySelector('input[name="password"]').value,
+            password: password,
             userId: userId,
-            createdAt: firebase.database.ServerValue.TIMESTAMP
+            updatedAt: firebase.database.ServerValue.TIMESTAMP
         };
+
+        // Only add createdAt for new entries, not updates
+        if (!editId) {
+            formData.createdAt = firebase.database.ServerValue.TIMESTAMP;
+        }
 
         if (!formData.appName) {
             throw new Error('Please select or enter an app name');
         }
 
-        // Save to Realtime Database under user's ID
-        const newPasswordRef = database.ref(`passwords/${userId}`).push();
-        await newPasswordRef.set(formData);
+        let ref;
+        if (editId) {
+            // Update existing password
+            ref = database.ref(`passwords/${userId}/${editId}`);
+            await ref.update(formData);
+        } else {
+            // Add new password
+            ref = database.ref(`passwords/${userId}`).push();
+            await ref.set(formData);
+        }
 
-        // Reset form and hide modal
+        // Reset form
         passwordForm.reset();
+        delete passwordForm.dataset.editId;
         modalSearchInput.value = '';
         modalElement.classList.remove('active');
         
-        showToast('Password saved successfully!', 'success');
-
-        // Reload passwords
+        showToast(editId ? 'Password updated successfully!' : 'Password saved successfully!', 'success');
         loadPasswords();
 
     } catch (error) {
@@ -132,7 +161,7 @@ function loadPasswords() {
         try {
             passwordsGrid.innerHTML = '';
             
-            if (!snapshot.exists()) {
+            if (!snapshot || snapshot.val() === null) {
                 // Handle empty state
                 passwordsGrid.innerHTML = `
                     <div class="empty-state">
@@ -207,7 +236,7 @@ function addPasswordCard(data, passwordId) {
     `;
 
     
-    // إضافة وظيفة إظهار/إخفاء ك��مة المرور
+    // إضافة وظيفة إظهار/إخفاء كمة المرور
     const toggleBtn = card.querySelector('.toggle-password');
     const passwordInput = card.querySelector('.password-input input');
     const toggleIcon = toggleBtn.querySelector('.material-symbols-outlined');
@@ -294,42 +323,40 @@ function filterByApp(appName) {
     });
 }
 
-// Copy Password
 async function copyPassword(passwordId) {
-    try {
-        if (!auth.currentUser) {
-            throw new Error('You must be logged in');
-        }
+    // التحقق من حالة المصادقة
+    if (!auth.currentUser) {
+        showToast('You must be logged in', 'error');
+        return;
+    }
 
+    try {
+        // الحصول على كلمة المرور من قاعدة البيانات
         const userId = auth.currentUser.uid;
-        const snapshot = await database.ref(`passwords/${userId}/${passwordId}`).once('value');
-        const data = snapshot.val();
-        
-        if (!data) {
+        const passwordRef = database.ref(`passwords/${userId}/${passwordId}`);
+        const snapshot = await passwordRef.once('value');
+        const passwordData = snapshot.val();
+
+        // التحقق من وجود البيانات
+        if (!passwordData || !passwordData.password) {
             throw new Error('Password not found');
         }
 
-        await navigator.clipboard.writeText(data.password);
-        
-        const copyBtn = document.querySelector(`[onclick="copyPassword('${passwordId}')"]`);
-        const icon = copyBtn.querySelector('.material-symbols-outlined');
-        
-        icon.textContent = 'check_circle';
-        copyBtn.classList.add('copied');
-        
-        setTimeout(() => {
-            icon.textContent = 'content_copy';
-            copyBtn.classList.remove('copied');
-        }, 2000);
+        // نسخ كلمة المرور إلى الحافظة
+        await navigator.clipboard.writeText(passwordData.password);
 
+        // تحدي واجهة المستخدم
+        updateCopyButton(passwordId);
+        
+        // إظهار رسالة النجاح
         showToast('Password copied to clipboard', 'success');
+
     } catch (error) {
-        console.error('Error copying password:', error);
-        showToast(error.message || 'Error copying password', 'error');
+        console.error('Copy password error:', error);
+        showToast(error.message || 'Failed to copy password', 'error');
     }
 }
 
-// Delete Password
 async function deletePassword(passwordId) {
     try {
         if (!auth.currentUser) {
@@ -337,46 +364,31 @@ async function deletePassword(passwordId) {
         }
 
         const userId = auth.currentUser.uid;
-        const toast = document.createElement('div');
-        toast.className = 'toast warning';
-        toast.innerHTML = `
-            <span class="material-symbols-outlined toast-icon">delete</span>
-            <div class="toast-content">
-                <p class="toast-message">Delete Password</p>
-                <p class="toast-submessage">Are you sure you want to delete this password?</p>
-                <div class="toast-actions">
-                    <button class="confirm-btn">Delete</button>
-                    <button class="cancel-btn">Cancel</button>
-                </div>
-            </div>
-        `;
+        console.log('Current User ID:', userId); // Log the user ID
+        const passwordRef = database.ref(`passwords/${userId}/${passwordId}`);
         
-        const container = document.querySelector('.toast-container');
-        container.appendChild(toast);
+        // Additional logging
+        console.log('Password Path:', `passwords/${userId}/${passwordId}`);
+        
+        // Check if password exists
+        const snapshot = await passwordRef.once('value');
+        if (!snapshot.exists()) {
+            throw new Error('Password not found');
+        }
 
-        const confirmBtn = toast.querySelector('.confirm-btn');
-        const cancelBtn = toast.querySelector('.cancel-btn');
-
-        confirmBtn.addEventListener('click', async () => {
-            try {
-                await database.ref(`passwords/${userId}/${passwordId}`).remove();
-                toast.remove();
-                showToast('Password deleted successfully', 'success');
-            } catch (error) {
-                console.error('Error deleting password:', error);
-                showToast('Error deleting password', 'error');
-            }
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            toast.remove();
-        });
+        // Rest of your existing code...
+        await passwordRef.set(null);
     } catch (error) {
-        console.error('Error initiating delete:', error);
+        console.error('Detailed Error:', {
+            message: error.message,
+            code: error.code,
+            name: error.name,
+            stack: error.stack
+        });
         showToast(error.message || 'Error deleting password', 'error');
+        return false;
     }
 }
-
 // Edit Password
 async function editPassword(passwordId) {
     try {
@@ -389,9 +401,32 @@ async function editPassword(passwordId) {
         const modalTitle = modal.querySelector('.modal-header h2');
         const saveBtn = modal.querySelector('.save-btn');
         
+        // تحديث العنوان حسب الحالة
         modalTitle.textContent = 'Edit Password';
         saveBtn.textContent = 'Update';
         modal.classList.add('active');
+
+        // إضافة زر العين بجانب حقل كلمة المرور
+        const passwordField = passwordForm.querySelector('input[name="password"]');
+        const existingEyeBtn = passwordForm.querySelector('.eye-btn');
+        
+        if (!existingEyeBtn) {
+            const eyeBtn = document.createElement('button');
+            eyeBtn.type = 'button';
+            eyeBtn.className = 'eye-btn';
+            eyeBtn.innerHTML = '<span class="material-symbols-outlined">visibility_off</span>';
+            
+            // إضافة الزر بعد حقل كلمة المرور
+            passwordField.parentNode.insertBefore(eyeBtn, passwordField.nextSibling);
+            
+            // إضافة وظيفة التبديل
+            eyeBtn.addEventListener('click', () => {
+                const type = passwordField.getAttribute('type');
+                passwordField.setAttribute('type', type === 'password' ? 'text' : 'password');
+                eyeBtn.querySelector('.material-symbols-outlined').textContent = 
+                    type === 'password' ? 'visibility' : 'visibility_off';
+            });
+        }
         
         const snapshot = await database.ref(`passwords/${userId}/${passwordId}`).once('value');
         const data = snapshot.val();
@@ -481,334 +516,26 @@ const loadingScreen = document.querySelector('.loading-screen');
 let unsubscribePasswords = null;
 let unsubscribeApps = null;
 
-// تحديث قائمة التطبيقات الجاهزة مع روابط أيقونات أفضل
-const commonApps = [
-    { name: 'Google', icon: 'https://www.google.com/s2/favicons?domain=google.com&sz=128' },
-    { name: 'Facebook', icon: 'https://www.google.com/s2/favicons?domain=facebook.com&sz=128' },
-    { name: 'Twitter', icon: 'https://www.google.com/s2/favicons?domain=twitter.com&sz=128' },
-    { name: 'Instagram', icon: 'https://www.google.com/s2/favicons?domain=instagram.com&sz=128' },
-    { name: 'LinkedIn', icon: 'https://www.google.com/s2/favicons?domain=linkedin.com&sz=128' },
-    { name: 'GitHub', icon: 'https://www.google.com/s2/favicons?domain=github.com&sz=128' },
-    { name: 'Microsoft', icon: 'https://www.google.com/s2/favicons?domain=microsoft.com&sz=128' },
-    { name: 'Apple', icon: 'https://www.google.com/s2/favicons?domain=apple.com&sz=128' },
-    { name: 'Amazon', icon: 'https://www.google.com/s2/favicons?domain=amazon.com&sz=128' },
-    { name: 'Netflix', icon: 'https://www.google.com/s2/favicons?domain=netflix.com&sz=128' }
-];
+// حذف تعريف commonApps القديم واستبداله بمتغير فارغ
+let commonApps = [];
 
-// تديث الافذة المنبثقة لعرض التطبيقات الجاهزة
-function showCommonApps() {
-    const searchResults = document.createElement('div');
-    searchResults.className = 'search-results';
-    
-    commonApps.forEach(app => {
-        const appItem = document.createElement('div');
-        appItem.className = 'app-search-item';
-        appItem.innerHTML = `
-            <img src="${app.icon}" alt="${app.name}">
-            <span>${app.name}</span>
-        `;
-        appItem.addEventListener('click', () => {
-            modalSearchInput.value = app.name;
-            searchResults.remove();
-        });
-        searchResults.appendChild(appItem);
-    });
-
-    const searchSection = document.querySelector('.search-section');
-    // Remove existing search results if any
-    const existingResults = searchSection.querySelector('.search-results');
-    if (existingResults) {
-        existingResults.remove();
-    }
-    searchSection.appendChild(searchResults);
-}
-
-// تحديث event listener للبحث
-modalSearchInput.addEventListener('focus', showCommonApps);
-
-// إخفاء نتائج البحث عن النقر خارجها
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.search-section')) {
-        const searchResults = document.querySelector('.search-results');
-        if (searchResults) {
-            searchResults.remove();
-        }
-    }
-});
-
-// أضف هذه الوظيفة في بداية الملف بعد تعريف المتغيرات
-const toastContainer = document.querySelector('.toast-container');
-
-// إخفاء toast-container عند بداية تحميل الصفحة
-toastContainer.style.display = 'none';
-
-// إظهار toast-container بعد 5 ثواني
-setTimeout(() => {
-    toastContainer.style.display = 'block';
-}, 5000);
-
-// تحديث وظيفة showToast للتحقق من حالة العرض
-function showToast(message, type = 'info') {
-    // التحقق من حالة العرض قبل إظهار التنبيه
-    if (toastContainer.style.display === 'none') {
-        return;
-    }
-
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    
-    let icon;
-    switch(type) {
-        case 'success':
-            icon = 'check_circle';
-            break;
-        case 'error':
-            icon = 'error';
-            break;
-        default:
-            icon = 'info';
-    }
-    
-    toast.innerHTML = `
-        <span class="material-symbols-outlined toast-icon">${icon}</span>
-        <div class="toast-content">
-            <p class="toast-message">${message}</p>
-        </div>
-    `;
-    
-    toastContainer.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.style.animation = 'slideOut 0.3s ease-out forwards';
-        setTimeout(() => {
-            toast.remove();
-        }, 300);
-    }, 3000);
-}
-
-// Mobile Menu Functions
-const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-const closeSidebarBtn = document.querySelector('.close-sidebar');
-const sidebar = document.querySelector('.sidebar');
-
-mobileMenuBtn.addEventListener('click', () => {
-    sidebar.classList.add('active');
-});
-
-closeSidebarBtn.addEventListener('click', () => {
-    sidebar.classList.remove('active');
-});
-
-// Close sidebar when clicking outside on mobile
-document.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768 && 
-        !sidebar.contains(e.target) && 
-        !mobileMenuBtn.contains(e.target) && 
-        sidebar.classList.contains('active')) {
-        sidebar.classList.remove('active');
-    }
-});
-
-// Main Search Function
-const mainSearchInput = document.querySelector('.search-box input');
-mainSearchInput.addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    const cards = document.querySelectorAll('.password-card');
-    
-    cards.forEach(card => {
-        const appName = card.querySelector('.card-header h3').textContent.toLowerCase();
-        const username = card.querySelector('.username').textContent.toLowerCase();
-        
-        if (appName.includes(searchTerm) || username.includes(searchTerm)) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-});
-
-// Common Apps Search
-const searchSection = document.querySelector('.search-section');
-
-modalSearchInput.addEventListener('focus', () => {
-    showCommonApps();
-});
-
-modalSearchInput.addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    const searchResults = document.querySelector('.search-results');
-    
-    if (searchResults) {
-        const items = searchResults.querySelectorAll('.app-search-item');
-        items.forEach(item => {
-            const appName = item.querySelector('span').textContent.toLowerCase();
-            if (appName.includes(searchTerm)) {
-                item.style.display = 'flex';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    }
-});
-
-// Password Generator with Options
-function generatePassword(length = 16, options = {
-    uppercase: true,
-    lowercase: true,
-    numbers: true,
-    symbols: true
-}) {
-    const chars = {
-        uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-        lowercase: 'abcdefghijklmnopqrstuvwxyz',
-        numbers: '0123456789',
-        symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
-    };
-
-    let availableChars = '';
-    Object.keys(options).forEach(key => {
-        if (options[key]) {
-            availableChars += chars[key];
-        }
-    });
-
-    let password = '';
-    for (let i = 0; i < length; i++) {
-        password += availableChars.charAt(Math.floor(Math.random() * availableChars.length));
-    }
-
-    return password;
-}
-
-// Enhanced Copy Function
-async function copyPassword(passwordId) {
+// إضافة دالة لتحميل المواقع من الملف
+async function loadCommonSites() {
     try {
-        const snapshot = await database.ref('passwords/' + passwordId).once('value');
-        const data = snapshot.val();
-        await navigator.clipboard.writeText(data.password);
-        
-        const copyBtn = document.querySelector(`[onclick="copyPassword('${passwordId}')"]`);
-        const icon = copyBtn.querySelector('.material-symbols-outlined');
-        
-        icon.textContent = 'check_circle';
-        icon.style.fontVariationSettings = "'FILL' 1";
-        copyBtn.style.color = '#4CAF50';
-        
-        setTimeout(() => {
-            icon.textContent = 'content_copy';
-            icon.style.fontVariationSettings = '';
-            copyBtn.style.color = '';
-        }, 2000);
-
-        showToast('Password copied to clipboard', 'success');
+        const response = await fetch('common-sites.json');
+        const data = await response.json();
+        commonApps = data.sites.map(site => ({
+            name: site.name,
+            icon: site.icon,
+            domains: site.domains,
+            category: site.category
+        }));
     } catch (error) {
-        console.error('Error copying password:', error);
-        showToast('Error copying password', 'error');
+        console.error('Error loading common sites:', error);
+        showToast('Error loading sites list', 'error');
     }
 }
 
-// Enhanced Delete Function
-async function deletePassword(passwordId) {
-    const toast = document.createElement('div');
-    toast.className = 'toast warning';
-    toast.innerHTML = `
-        <span class="material-symbols-outlined toast-icon">delete</span>
-        <div class="toast-content">
-            <p class="toast-message">Delete Password</p>
-            <p class="toast-submessage">Are you sure you want to delete this password?</p>
-            <div class="toast-actions">
-                <button class="confirm-btn">Delete</button>
-                <button class="cancel-btn">Cancel</button>
-            </div>
-        </div>
-    `;
-    
-    const container = document.querySelector('.toast-container');
-    container.appendChild(toast);
-
-    const confirmBtn = toast.querySelector('.confirm-btn');
-    const cancelBtn = toast.querySelector('.cancel-btn');
-
-    return new Promise((resolve) => {
-        confirmBtn.addEventListener('click', async () => {
-            try {
-                await database.ref('passwords/' + passwordId).remove();
-                toast.remove();
-                showToast('Password deleted successfully', 'success');
-                resolve(true);
-            } catch (error) {
-                console.error('Error deleting password:', error);
-                showToast('Error deleting password', 'error');
-                resolve(false);
-            }
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            toast.remove();
-            resolve(false);
-        });
-    });
-}// Enhanced Toast Function
-function showToast(message, type = 'info', duration = 3000) {
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    
-    let icon;
-    switch(type) {
-        case 'success':
-            icon = 'check_circle';
-            break;
-        case 'error':
-            icon = 'error';
-            break;
-        case 'warning':
-            icon = 'warning';
-            break;
-        default:
-            icon = 'info';
-    }
-    
-    toast.innerHTML = `
-        <span class="material-symbols-outlined toast-icon">${icon}</span>
-        <div class="toast-content">
-            <p class="toast-message">${message}</p>
-        </div>
-    `;
-    
-    const container = document.querySelector('.toast-container');
-    container.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.style.animation = 'slideOut 0.3s ease-out forwards';
-        setTimeout(() => {
-            toast.remove();
-        }, 300);
-    }, duration);
-}
-
-// Cleanup Function
-function cleanup() {
-    if (unsubscribePasswords) {
-        unsubscribePasswords();
-    }
-    if (unsubscribeApps) {
-        unsubscribeApps();
-    }
-}
-
-// Event Listeners for Cleanup
-window.addEventListener('beforeunload', cleanup);
-window.addEventListener('unload', cleanup);
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    auth.onAuthStateChanged((user) => {
-        if (!user) {
-            window.location.href = 'login.html';
-        } else {
-            loadPasswords();
-            loadApps();
-        }
-    });
-});
+// استدعاء الدالة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', loadCommonSites);
 

@@ -2,10 +2,7 @@ function showMessage(message, type = 'error') {
     const messageContainer = document.querySelector('.message-container');
     messageContainer.textContent = message;
     messageContainer.className = `message-container ${type}`;
-    
-    setTimeout(() => {
-        messageContainer.style.display = 'none';
-    }, 5000);
+    messageContainer.style.display = 'block';
 }
 
 // Firebase configuration
@@ -35,16 +32,45 @@ const signupForm = document.querySelector('.signup-form');
 googleBtn.addEventListener('click', async () => {
     try {
         const provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('profile');
+        provider.addScope('email');
+        
+        provider.setCustomParameters({
+            'locale': navigator.language || 'en'
+        });
+
         const result = await auth.signInWithPopup(provider);
         
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(result.user));
+        const user = result.user;
+        localStorage.setItem('user', JSON.stringify({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL
+        }));
+
+        showMessage('Account created successfully!', 'success');
         
-        // Redirect to dashboard
         window.location.href = 'dashboard.html';
     } catch (error) {
-        console.error('Error signing up with Google:', error);
-        alert('Error signing up with Google. Please try again.');
+        console.error('Google Sign Up Error:', error);
+        
+        let errorMessage = 'Error signing up with Google.';
+        switch (error.code) {
+            case 'auth/popup-blocked':
+                errorMessage = 'Please allow popups for this website and try again.';
+                break;
+            case 'auth/popup-closed-by-user':
+                errorMessage = 'Sign up was cancelled. Please try again.';
+                break;
+            case 'auth/account-exists-with-different-credential':
+                errorMessage = 'An account already exists with this email using a different sign-in method.';
+                break;
+            default:
+                errorMessage = error.message;
+        }
+        
+        showMessage(errorMessage, 'error');
     }
 });
 
@@ -54,6 +80,12 @@ signupForm.addEventListener('submit', async (e) => {
     
     const email = signupForm.querySelector('input[name="email"]').value;
     const password = signupForm.querySelector('input[name="password"]').value;
+
+    // التحقق من طول كلمة المرور
+    if (password.length < 8) {
+        showMessage('Password must be at least 8 characters long.');
+        return;
+    }
 
     try {
         const result = await auth.createUserWithEmailAndPassword(email, password);
@@ -70,7 +102,7 @@ signupForm.addEventListener('submit', async (e) => {
                 errorMessage = 'Invalid email address.';
                 break;
             case 'auth/weak-password':
-                errorMessage = 'Password should be at least 6 characters.';
+                errorMessage = 'Password must be at least 8 characters long.';
                 break;
         }
         
