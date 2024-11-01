@@ -1,0 +1,444 @@
+/* Dark Mode Styles */
+:root {
+    --bg-primary: #fffdfc;
+    --bg-secondary: #fffdfc;
+    --text-primary: #08102b;
+    --text-secondary: #989b9f;
+    --border-color: #e6e6e6;
+    --hover-bg: #f1f1f0;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    --modal-bg: rgba(0,0,0,0.5);
+    --toast-bg: #fffdfc;
+    --toast-text: #08102b;
+    --input-bg: #fffdfc;
+    --input-text: #08102b;
+    --input-border: #e6e6e6;
+    --dropdown-bg: #fffdfc;
+    --dropdown-text: #08102b;
+    --dropdown-hover: #f1f1f0;
+    --empty-state-bg: #f6f6f6;
+    --empty-state-text: #989b9f;
+}
+
+body.dark-mode {
+    --bg-primary: #1e1e1e;
+    --bg-secondary: #2d2d30;
+    --text-primary: #fffdfc;
+    --text-secondary: #989b9f;
+    --border-color: #343435;
+    --hover-bg: #252526;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    --modal-bg: rgba(0,0,0,0.7);
+    --toast-bg: #2d2d30;
+    --toast-text: #fffdfc;
+    --input-bg: #252526;
+    --input-text: #fffdfc;
+    --input-border: #343435;
+    --dropdown-bg: #2d2d30;
+    --dropdown-text: #fffdfc;
+    --dropdown-hover: #252526;
+    --empty-state-bg: #252526;
+    --empty-state-text: #989b9f;
+}
+
+/* تطبيق المتغيرات على العناصر */
+body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--fontB);
+}
+
+.sidebar {
+    background: var(--bg-secondary);
+    border-right: var(--headerL) solid var(--border-color);
+}
+
+.logo h1 {
+    color: var(--text-primary);
+}
+
+.search-box {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+}
+
+.search-box input {
+    color: var(--input-text);
+    background: transparent;
+}
+
+.search-box input::placeholder {
+    color: var(--text-secondary);
+}
+
+.password-card {
+    background: var(--bg-secondary);
+    box-shadow: var(--card-shadow);
+}
+
+.card-header h3 {
+    color: var(--text-primary);
+}
+
+.username {
+    color: var(--text-secondary);
+}
+
+.password-input input {
+    background: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+}
+
+.modal-header h2 {
+    color: var(--text-primary);
+}
+
+.input-group label {
+    color: var(--text-secondary);
+}
+
+.input-group input {
+    background: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+}
+
+.dropdown-menu {
+    background: var(--dropdown-bg);
+    border: 1px solid var(--border-color);
+}
+
+.dropdown-menu button {
+    color: var(--dropdown-text);
+}
+
+.dropdown-menu button:hover {
+    background: var(--dropdown-hover);
+}
+
+.empty-state {
+    background: var(--empty-state-bg);
+}
+
+.empty-state p {
+    color: var(--empty-state-text);
+}
+
+.toast {
+    background: var(--toast-bg);
+    color: var(--toast-text);
+}
+
+/* Loading Screen */
+.loading-screen {
+    background: var(--bg-primary);
+}
+
+.loader p {
+    color: var(--text-secondary);
+}
+
+/* Search Results */
+.search-results {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.app-search-item:hover {
+    background: var(--hover-bg);
+}
+
+.app-search-item span {
+    color: var(--text-primary);
+}
+
+/* Mobile Menu */
+.mobile-menu-btn {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+    color: var(--text-secondary);
+}
+
+.theme-toggle-btn:hover {
+    background: var(--hover-bg);
+}
+
+/* Actions Buttons */
+.actions button {
+    color: var(--text-secondary);
+}
+
+.actions button:hover {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+/* Modal Overlay */
+.modal {
+    background: var(--modal-bg);
+}
+
+/* Toast Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* تحديث أنماط النصوص */
+input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* تحديث أنماط التمرير */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* تحديث أنماط التحديد */
+::selection {
+    background: var(--accent-color);
+    color: #ffffff;
+}
+
+/* تحديث عنوان الصفحة الرئيسية */
+.main-header h2 {
+    font-size: var(--headerT);
+    font-weight: var(--headerW);
+    color: var(--headerC);
+}
+
+/* تحديث تأثيرات hover */
+.add-password-btn:hover,
+.logout-btn:hover,
+.save-btn:hover {
+    filter: brightness(0.9);
+}
+
+.theme-toggle-btn:hover,
+.menu-dots .menu-btn:hover,
+.actions button:hover,
+.app-search-item:hover,
+.dropdown-menu button:hover {
+    background: var(--mobHv);
+}
+
+/* تحديث نافذة تأكيد الحذف */
+.toast.warning {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.toast.warning .toast-message {
+    color: var(--text-primary);
+}
+
+.toast.warning .toast-submessage {
+    color: var(--text-secondary);
+}
+
+.toast.warning .confirm-btn {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.toast.warning .confirm-btn:hover {
+    filter: brightness(0.9);
+}
+
+.toast.warning .cancel-btn {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.toast.warning .cancel-btn:hover {
+    background: var(--hover-bg);
+}
+
+.toast.warning::before {
+    background: var(--modal-bg);
+}
+
+/* إضافة المزيد من العناصر للوضع المظلم */
+
+/* Search Section */
+.search-section input {
+    background: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+}
+
+.search-section input:hover {
+    border-color: var(--darkU);
+}
+
+.search-section input:focus {
+    border-color: var(--accent-color);
+    background: var(--darkBs);
+}
+
+/* App Icon */
+.app-icon {
+    background: var(--darkBs);
+    border: 1px solid var(--darkW);
+}
+
+/* Additional Hover States */
+.close-btn:hover {
+    background: var(--mobHv);
+}
+
+.password-input .generate-btn:hover,
+.password-input .toggle-password:hover,
+.password-input .eye-btn:hover {
+    background: var(--mobHv);
+    color: var(--darkT);
+}
+
+.app-search-item.new-site,
+.app-search-item.custom-domain {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+.app-search-item.new-site:hover,
+.app-search-item.custom-domain:hover {
+    background: var(--hover-bg);
+}
+
+.app-search-item.new-site span,
+.app-search-item.custom-domain span {
+    color: var(--text-primary);
+}
+
+/* Modal Elements */
+.modal .close-btn {
+    color: var(--text-secondary);
+}
+
+.modal .close-btn:hover {
+    background: var(--mobHv);
+    color: var(--darkT);
+}
+
+/* Form Elements */
+.input-group input:focus {
+    border-color: var(--accent-color);
+    background: var(--darkBs);
+}
+
+/* Password Input Icons */
+.password-input .material-symbols-outlined {
+    color: var(--text-secondary);
+}
+
+.password-input button.active {
+    color: var(--accent-color);
+    background: var(--darkBs);
+}
+
+/* Dropdown Menu Items */
+.dropdown-menu button:first-child {
+    color: var(--accent-color);
+}
+
+.dropdown-menu button:first-child:hover {
+    background: var(--darkBs);
+}
+
+.dropdown-menu button:last-child {
+    color: var(--darkU);
+}
+
+.dropdown-menu button:last-child:hover {
+    background: var(--darkBs);
+}
+
+/* Search Results */
+.search-results {
+    background: var(--bg-secondary);
+    border-color: var(--darkW);
+}
+
+.app-suggestion:hover {
+    background: var(--mobHv);
+}
+
+/* Mobile Menu */
+.mobile-menu-btn:hover {
+    background: var(--mobHv);
+}
+
+/* Additional States */
+.password-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.add-password-btn:active,
+.save-btn:active,
+.logout-btn:active {
+    transform: scale(0.98);
+}
+
+/* Focus States */
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Active States */
+.toggle-password.active,
+.eye-btn.active {
+    color: var(--accent-color);
+    background: var(--darkBs);
+}
+
+/* Toast Notifications */
+.toast.success {
+    border-left: 4px solid var(--darkU);
+}
+
+.toast.error {
+    border-left: 4px solid var(--synxRed);
+}
+
+/* Loading Animation */
+.loader .material-symbols-outlined {
+    color: var(--accent-color);
+}
+
+/* Empty State */
+.empty-state .material-symbols-outlined {
+    color: var(--text-secondary);
+    background: var(--darkBs);
+}

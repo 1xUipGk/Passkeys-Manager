@@ -86,6 +86,7 @@ passwordForm.addEventListener('submit', async (e) => {
     
     const modalElement = document.getElementById('addPasswordModal');
     const password = passwordForm.querySelector('input[name="password"]').value;
+    const note = passwordForm.querySelector('input[name="note"]').value.trim();
     const editId = passwordForm.dataset.editId;
 
     try {
@@ -93,8 +94,8 @@ passwordForm.addEventListener('submit', async (e) => {
             throw new Error('You must be logged in to save passwords');
         }
 
-        if (password.length < 8) {
-            throw new Error('Password must be at least 8 characters long');
+        if (note.length > 100) {
+            throw new Error('Note must not exceed 100 characters');
         }
 
         const userId = auth.currentUser.uid;
@@ -103,9 +104,11 @@ passwordForm.addEventListener('submit', async (e) => {
             username: passwordForm.querySelector('input[name="username"]').value.trim(),
             email: passwordForm.querySelector('input[name="email"]').value.trim(),
             password: password,
+            note: note,
             userId: userId,
             updatedAt: firebase.database.ServerValue.TIMESTAMP
         };
+
 
         // Only add createdAt for new entries, not updates
         if (!editId) {
@@ -136,7 +139,7 @@ passwordForm.addEventListener('submit', async (e) => {
         showToast(editId ? 'Password updated successfully!' : 'Password saved successfully!', 'success');
         loadPasswords();
 
-    } catch (error) {
+  } catch (error) {
         console.error('Error saving password:', error);
         showToast(error.message || 'Error saving password. Please try again.', 'error');
     }
@@ -152,7 +155,6 @@ function loadPasswords() {
     const userId = auth.currentUser.uid;
     const passwordsRef = database.ref(`passwords/${userId}`);
     
-    // Unsubscribe from previous listener if exists
     if (unsubscribePasswords) {
         unsubscribePasswords();
     }
@@ -160,9 +162,9 @@ function loadPasswords() {
     unsubscribePasswords = passwordsRef.on('value', (snapshot) => {
         try {
             passwordsGrid.innerHTML = '';
+            searchInput.value = ''; // إعادة تعيين حقل البحث
             
             if (!snapshot || snapshot.val() === null) {
-                // Handle empty state
                 passwordsGrid.innerHTML = `
                     <div class="empty-state">
                         <p>No passwords saved yet</p>
@@ -178,13 +180,10 @@ function loadPasswords() {
             console.error('Error loading passwords:', error);
             showToast('Error loading passwords', 'error');
         } finally {
-            setTimeout(() => {
+            if (loadingScreen) {
                 loadingScreen.classList.add('hidden');
-            }, 1000);
+            }
         }
-    }, (error) => {
-        console.error('Database error:', error);
-        showToast('Error accessing database', 'error');
     });
 }
 
@@ -193,9 +192,13 @@ function addPasswordCard(data, passwordId) {
     const card = document.createElement('div');
     card.className = 'password-card';
     card.setAttribute('data-id', passwordId);
+    
+    // إضافة النص الإضافي (note) بعد اسم التطبيق
+    const noteText = data.note ? ` - ${data.note}` : '';
+    
     card.innerHTML = `
         <div class="card-header">
-            <h3>${data.appName}</h3>
+            <h3>${data.appName}${noteText}</h3>
         </div>
         <div class="card-content">
             <div class="app-icon">
@@ -358,36 +361,62 @@ async function copyPassword(passwordId) {
 }
 
 async function deletePassword(passwordId) {
-    try {
-        if (!auth.currentUser) {
-            throw new Error('You must be logged in');
-        }
+    // إنشاء toast تأكيد الحذف
+    const toast = document.createElement('div');
+    toast.className = 'toast warning';
+    toast.innerHTML = `
+        <span class="material-symbols-outlined toast-icon">delete</span>
+        <div class="toast-content">
+            <p class="toast-message">Delete Password</p>
+            <p class="toast-submessage">Are you sure you want to delete this password?</p>
+            <div class="toast-actions">
+                <button class="confirm-btn">Delete</button>
+                <button class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    `;
 
-        const userId = auth.currentUser.uid;
-        console.log('Current User ID:', userId); // Log the user ID
-        const passwordRef = database.ref(`passwords/${userId}/${passwordId}`);
-        
-        // Additional logging
-        console.log('Password Path:', `passwords/${userId}/${passwordId}`);
-        
-        // Check if password exists
-        const snapshot = await passwordRef.once('value');
-        if (!snapshot.exists()) {
-            throw new Error('Password not found');
-        }
+    toastContainer.appendChild(toast);
 
-        // Rest of your existing code...
-        await passwordRef.set(null);
-    } catch (error) {
-        console.error('Detailed Error:', {
-            message: error.message,
-            code: error.code,
-            name: error.name,
-            stack: error.stack
+    // معالجة أزرار التأكيد والإلغاء
+    return new Promise((resolve) => {
+        const confirmBtn = toast.querySelector('.confirm-btn');
+        const cancelBtn = toast.querySelector('.cancel-btn');
+
+        confirmBtn.addEventListener('click', async () => {
+            try {
+                if (!auth.currentUser) {
+                    throw new Error('You must be logged in');
+                }
+
+                const userId = auth.currentUser.uid;
+                const passwordRef = database.ref(`passwords/${userId}/${passwordId}`);
+                await passwordRef.remove();
+                
+                showToast('Password deleted successfully', 'success');
+                toast.remove();
+                resolve(true);
+            } catch (error) {
+                console.error('Delete error:', error);
+                showToast(error.message || 'Error deleting password', 'error');
+                toast.remove();
+                resolve(false);
+            }
         });
-        showToast(error.message || 'Error deleting password', 'error');
-        return false;
-    }
+
+        cancelBtn.addEventListener('click', () => {
+            toast.remove();
+            resolve(false);
+        });
+
+        // إزالة toast بع 10 ثواني إذا لم يتم اتخاذ إجراء
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.remove();
+                resolve(false);
+            }
+        }, 10000);
+    });
 }
 // Edit Password
 async function editPassword(passwordId) {
@@ -406,7 +435,7 @@ async function editPassword(passwordId) {
         saveBtn.textContent = 'Update';
         modal.classList.add('active');
 
-        // إضافة زر العين بجانب حقل كلمة المرور
+        // إضاف زر العين بجانب حقل كلمة المرور
         const passwordField = passwordForm.querySelector('input[name="password"]');
         const existingEyeBtn = passwordForm.querySelector('.eye-btn');
         
@@ -439,6 +468,7 @@ async function editPassword(passwordId) {
         passwordForm.querySelector('input[name="username"]').value = data.username || '';
         passwordForm.querySelector('input[name="email"]').value = data.email || '';
         passwordForm.querySelector('input[name="password"]').value = data.password || '';
+        passwordForm.querySelector('input[name="note"]').value = data.note || ''; // إضافة الملاحظة
         
         passwordForm.dataset.editId = passwordId;
     } catch (error) {
@@ -446,7 +476,6 @@ async function editPassword(passwordId) {
         showToast(error.message || 'Error loading password data', 'error');
     }
 }
-
 // Search Functionality
 modalSearchInput.addEventListener('input', (e) => {
     const searchTerm = e.target.value.toLowerCase();
@@ -486,11 +515,14 @@ auth.onAuthStateChanged((user) => {
     }
     
     // Show loading screen
-    loadingScreen.classList.remove('hidden');
+    if (loadingScreen) {
+        loadingScreen.classList.remove('hidden');
+    }
     
     // Load data
     loadPasswords();
     loadApps();
+    loadCommonSites();
     
     // Update UI to show user info
     const userEmail = document.querySelector('.user-email');
@@ -511,31 +543,369 @@ window.addEventListener('beforeunload', () => {
 
 // في بداية الملف، بعد تعريف المتغيرات
 const loadingScreen = document.querySelector('.loading-screen');
-
-// في بداية الملف، بعد تهيئة Firebase
+const mobileSidebar = document.querySelector('.sidebar');
+const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+const closeSidebarBtn = document.querySelector('.close-sidebar');
+let commonApps = [];
 let unsubscribePasswords = null;
 let unsubscribeApps = null;
 
-// حذف تعريف commonApps القديم واستبداله بمتغير فارغ
-let commonApps = [];
-
-// إضافة دالة لتحميل المواقع من الملف
-async function loadCommonSites() {
+// تحديث دالة loadCommonSites
+function loadCommonSites() {
     try {
-        const response = await fetch('common-sites.json');
-        const data = await response.json();
-        commonApps = data.sites.map(site => ({
-            name: site.name,
-            icon: site.icon,
-            domains: site.domains,
-            category: site.category
-        }));
+        // استخدام البيانات من sites-data.js مباشرة
+        commonApps = sitesData.sites;
+        updateAppsList();
+        updateModalAppsList();
     } catch (error) {
         console.error('Error loading common sites:', error);
         showToast('Error loading sites list', 'error');
     }
 }
 
-// استدعاء الدالة عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', loadCommonSites);
+// تحديث دالة updateAppsList
+function updateAppsList() {
+    const appsList = document.querySelector('.apps-list');
+    if (!appsList) return;
+
+    appsList.innerHTML = commonApps.map(app => `
+        <div class="app-item" data-app="${app.name}">
+            <img src="${app.icon}" alt="${app.name}" onerror="this.src='assets/images/default-icon.png'">
+            <span>${app.name}</span>
+        </div>
+    `).join('');
+
+    // إضافة ستمعي الأحداث
+    appsList.querySelectorAll('.app-item').forEach(item => {
+        item.addEventListener('click', () => {
+            filterByApp(item.dataset.app);
+        });
+    });
+}
+
+// تحديث دالة updateModalAppsList
+function updateModalAppsList() {
+    const appsList = document.querySelector('.apps-suggestions');
+    if (!appsList) {
+        console.log('Apps list element not found');
+        return;
+    }
+
+    // تحديث قائمة التطبيقات
+    let html = commonApps.map(app => `
+        <div class="app-suggestion" data-app="${app.name}">
+            <img src="${app.icon}" alt="${app.name}" onerror="this.src='assets/images/default-icon.png'">
+            <span>${app.name}</span>
+        </div>
+    `).join('');
+
+    // إضافة خيارات إضافية
+    html += `
+        <div class="app-search-item new-site">
+            <span class="material-symbols-outlined">add</span>
+            <span>Add New Site</span>
+        </div>
+        <div class="app-search-item custom-domain">
+            <span class="material-symbols-outlined">language</span>
+            <span>Use Custom Domain</span>
+        </div>
+    `;
+
+    appsList.innerHTML = html;
+    appsList.style.display = 'none'; // إخفاء القائمة في البداية
+
+    // إضافة مستمعي الأحداث
+    appsList.querySelectorAll('.app-suggestion').forEach(item => {
+        item.addEventListener('click', () => {
+            if (modalSearchInput) {
+                modalSearchInput.value = item.dataset.app;
+                appsList.style.display = 'none';
+            }
+        });
+    });
+
+    // إضافة مستمعي الأحداث للخيارات الإضافية
+    const newSiteBtn = appsList.querySelector('.new-site');
+    const customDomainBtn = appsList.querySelector('.custom-domain');
+
+    if (newSiteBtn && modalSearchInput) {
+        newSiteBtn.addEventListener('click', () => {
+            modalSearchInput.value = '';
+            modalSearchInput.placeholder = 'Enter new site name...';
+            modalSearchInput.focus();
+            appsList.style.display = 'none';
+        });
+    }
+
+    if (customDomainBtn && modalSearchInput) {
+        customDomainBtn.addEventListener('click', () => {
+            modalSearchInput.value = '';
+            modalSearchInput.placeholder = 'Enter custom domain...';
+            modalSearchInput.focus();
+            appsList.style.display = 'none';
+        });
+    }
+}
+
+// تحديث متمع الأحداث للبحث
+async function showCommonApps(query = '') {
+    const searchResults = document.createElement('div');
+    searchResults.className = 'search-results';
+    
+    // تصفية التطبيقات الموجودة
+    const filteredApps = commonApps.filter(app => 
+        app.name.toLowerCase().includes(query.toLowerCase())
+    );
+    
+    if (filteredApps.length > 0) {
+        filteredApps.forEach(app => {
+            const appItem = document.createElement('div');
+            appItem.className = 'app-search-item';
+            appItem.innerHTML = `
+                <img src="${app.icon}" alt="${app.name}" onerror="this.src='assets/default-icon.png'">
+                <span>${app.name}</span>
+            `;
+            appItem.addEventListener('click', () => {
+                modalSearchInput.value = app.name;
+                searchResults.remove();
+            });
+            searchResults.appendChild(appItem);
+        });
+    }
+    
+    // إضافة خيار إضافة موقع جديد
+    const newSiteItem = document.createElement('div');
+    newSiteItem.className = 'app-search-item new-site';
+    newSiteItem.innerHTML = `
+        <span class="material-symbols-outlined">add_circle</span>
+        <span>Add new site</span>
+    `;
+    
+    newSiteItem.addEventListener('click', () => {
+        const siteName = query.trim();
+        if (siteName) {
+            const iconUrl = `https://www.google.com/s2/favicons?domain=${siteName.toLowerCase()}.com&sz=128`;
+            const newApp = {
+                name: siteName,
+                icon: iconUrl,
+                domains: [`${siteName.toLowerCase()}.com`],
+                category: 'custom'
+            };
+            
+            commonApps.push(newApp);
+            modalSearchInput.value = siteName;
+            searchResults.remove();
+            updateModalAppsList();
+            showToast(`Added "${siteName}" to the list`, 'success');
+        }
+    });
+    
+    searchResults.appendChild(newSiteItem);
+
+    // إضافة خيار النطاق المخصص
+    const customDomainItem = document.createElement('div');
+    customDomainItem.className = 'app-search-item custom-domain';
+    customDomainItem.innerHTML = `
+        <span class="material-symbols-outlined">language</span>
+        <span>Use custom domain</span>
+    `;
+    
+    customDomainItem.addEventListener('click', () => {
+        const customDomain = prompt('Enter the full domain (e.g., example.com):');
+        if (customDomain) {
+            const iconUrl = `https://www.google.com/s2/favicons?domain=${customDomain}&sz=128`;
+            const newApp = {
+                name: query.trim() || customDomain,
+                icon: iconUrl,
+                domains: [customDomain],
+                category: 'custom'
+            };
+            
+            commonApps.push(newApp);
+            modalSearchInput.value = newApp.name;
+            searchResults.remove();
+            updateModalAppsList();
+            showToast(`Added "${newApp.name}" with custom domain`, 'success');
+        }
+    });
+    
+    searchResults.appendChild(customDomainItem);
+
+    // إضافة النتائج إلى واجهة المستخدم
+    const searchSection = document.querySelector('.search-section');
+    const existingResults = searchSection.querySelector('.search-results');
+    if (existingResults) {
+        existingResults.remove();
+    }
+    searchSection.appendChild(searchResults);
+}
+
+// تحديث مستمع الأحداث للبحث
+modalSearchInput.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.trim();
+    if (searchTerm) {
+        showCommonApps(searchTerm);
+    } else {
+        const searchResults = document.querySelector('.search-results');
+        if (searchResults) {
+            searchResults.remove();
+        }
+    }
+});
+
+// إخفاء قائمة الاقتراحات عند النقر خارجها
+document.addEventListener('click', (e) => {
+    const appsList = document.querySelector('.apps-suggestions');
+    if (appsList && !e.target.closest('.search-section')) {
+        appsList.style.display = 'none';
+    }
+});
+
+// تعريف دالة showToast إذا لم تكن موجودة
+function showToast(message, type = 'info') {
+    const toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <span class="material-symbols-outlined">${type === 'success' ? 'check_circle' : 'info'}</span>
+        <span>${message}</span>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// تحديث وظائف القائمة المتنقلة
+if (mobileMenuBtn && mobileSidebar) {
+    // فتح القائمة الجانبية
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileSidebar.classList.add('active');
+        document.body.style.overflow = 'hidden'; // منع التمرير عند فتح القائمة
+    });
+
+    // إغلاق القائمة الجانبية عند النقر على زر الإغلاق
+    if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', () => {
+            mobileSidebar.classList.remove('active');
+            document.body.style.overflow = ''; // إعادة تمكين التمرير
+        });
+    }
+
+    // إغلاق القائمة عند النقر خارجها
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.sidebar') && 
+            !e.target.closest('.mobile-menu-btn') && 
+            mobileSidebar.classList.contains('active')) {
+            mobileSidebar.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // منع انتشار النقر داخل القائمة الجانبية
+    mobileSidebar.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+}
+
+// إضافة مستمع للتغيير في حجم النافذة
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) { // حجم الشاشة الذي تريد عنده إخفاء القائمة المتنقلة
+        mobileSidebar.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+});
+// إضافة مستمع لأحداث التمرير للتأكد من إغلاق القائمة عند التمرير
+let lastScrollTop = 0;
+window.addEventListener('scroll', () => {
+    const st = window.pageYOffset || document.documentElement.scrollTop;
+    if (st > lastScrollTop && mobileSidebar.classList.contains('active')) {
+        mobileSidebar.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    lastScrollTop = st <= 0 ? 0 : st;
+}, false);
+
+// تعريف عنصر البحث
+const searchInput = document.querySelector('.search-box input');
+
+// إضافة مستمع للبحث المباشر
+searchInput.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase().trim();
+    filterPasswords(searchTerm);
+});
+
+// دالة تصفية كلمات المرور
+function filterPasswords(searchTerm) {
+    const passwordCards = document.querySelectorAll('.password-card');
+    
+    passwordCards.forEach(card => {
+        const appName = card.querySelector('.card-header h3').textContent.toLowerCase();
+        const username = card.querySelector('.username').textContent.toLowerCase();
+        const note = card.querySelector('.card-header h3').textContent.toLowerCase();
+        
+        // البحث في اسم التطبيق واسم المستخدم والملاحظة
+        const isMatch = appName.includes(searchTerm) || 
+                       username.includes(searchTerm) ||
+                       note.includes(searchTerm);
+        
+        card.style.display = isMatch ? 'block' : 'none';
+    });
+
+    // إظهار رسالة إذا لم يتم العثور على نتائج
+    const noResults = !Array.from(passwordCards)
+        .some(card => card.style.display === 'block');
+
+    showNoResults(noResults);
+}
+
+// دالة إظهار رسالة عدم وجود نتائج
+function showNoResults(show) {
+    let noResultsElement = document.querySelector('.no-results');
+    
+    if (show) {
+        if (!noResultsElement) {
+            noResultsElement = document.createElement('div');
+            noResultsElement.className = 'no-results';
+            noResultsElement.innerHTML = `
+                <div class="empty-state">
+                    <span class="material-symbols-outlined">search_off</span>
+                    <p>No passwords match your search</p>
+                </div>
+            `;
+            passwordsGrid.appendChild(noResultsElement);
+        }
+    } else if (noResultsElement) {
+        noResultsElement.remove();
+    }
+}
+
+// Dark Mode Toggle
+const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+const themeIcon = themeToggleBtn.querySelector('.material-symbols-outlined');
+const themeText = themeToggleBtn.querySelector('.btn-text');
+
+// تحقق من الوضع المحفوظ
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeIcon.textContent = 'dark_mode';
+    themeText.textContent = 'Light Mode';
+}
+
+themeToggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    
+    // تحديث الأيقونة والنص
+    themeIcon.textContent = isDarkMode ? 'dark_mode' : 'light_mode';
+    themeText.textContent = isDarkMode ? 'Light Mode' : 'Dark Mode';
+    
+    // حفظ التفضيل
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+});
 

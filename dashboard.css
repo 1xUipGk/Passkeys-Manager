@@ -188,9 +188,10 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
+    position: relative;
+    min-height: 400px;
 }
 
-/* Password Card */
 .password-card {
     background: white;
     border-radius: 12px;
@@ -198,6 +199,7 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     transition: transform 0.2s, box-shadow 0.2s;
     opacity: 1;
+    height: min-content;
     transform: scale(1);
 }
 
@@ -975,7 +977,7 @@ body {
     color: #333;
 }
 
-/* تحديث أنماط الأزرار عند التفعيل */
+/* تحديث أنماط الأزرار عن�� التفعيل */
 .password-input button.active {
     color: #4285f4;
     background: #f5f5f7;
@@ -1215,12 +1217,9 @@ body {
 }
 
 .toast.warning .toast-content {
-    background: white;
     width: 100%;
     max-width: 500px;
-    margin: 20px;
     border-radius: 12px;
-    padding: 24px;
     animation: modalShow 0.3s ease-out;
 }
 
@@ -1375,16 +1374,14 @@ body {
     align-items: center;
     gap: 0;
     margin-bottom: 0;
+    width: max-content;
+    height: min-content;
 }
 
 .toast.warning::before {
-    content: '';
-    position: fixed;
-    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0,0,0,0.5);
     z-index: -53;
 }
 
@@ -1399,12 +1396,13 @@ body {
     align-items: center;
     justify-content: center;
     font-variation-settings: 'FILL' 1;
-    margin-bottom: 24px;
+    margin-bottom: 0;
 }
 
 .toast.warning .toast-content {
     text-align: center;
     width: 100%;
+    margin: 20px;
 }
 
 .toast.warning .toast-message {
@@ -1569,37 +1567,33 @@ body {
 /* تحديث أنماط القائمة المنسدلة للهواتف */
 @media (max-width: 768px) {
     .dropdown-menu {
-        position: fixed;
-        left: 20px;
-        right: 20px;
-        bottom: 20px;
-        top: auto;
-        min-width: auto;
-        border-radius: 16px;
-        padding: 12px;
-        animation: dropdownShowMobile 0.3s ease-out;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        min-width: 200px;
+        border-radius: 12px;
+        padding: 8px;
+        background: white;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        animation: dropdownShow 0.2s ease-out;
+        z-index: 100;
     }
 
     .dropdown-menu button {
-        padding: 14px;
-        font-size: 16px;
+        padding: 12px;
+        font-size: 14px;
+        width: 100%;
+        text-align: left;
     }
 
     .dropdown-menu::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.5);
-        z-index: -1;
+        display: none;
     }
 
-    @keyframes dropdownShowMobile {
+    @keyframes dropdownShow {
         from {
             opacity: 0;
-            transform: translateY(100%);
+            transform: translateY(-8px);
         }
         to {
             opacity: 1;
@@ -1719,4 +1713,150 @@ body {
     max-height: 300px;
     overflow-y: auto;
     padding: 8px 0;
+}
+
+/* تحديث أنماط حالة عدم وجود نتائج البحث */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin: 20px auto;
+    max-width: 400px;
+}
+
+.empty-state .material-symbols-outlined {
+    font-size: 48px;
+    color: #9AA0A6;
+    margin-bottom: 16px;
+    background: #F8F9FA;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-state p {
+    color: #5F6368;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* إضافة أنيميشن لطيف */
+.empty-state {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* تحسين المظهر على الهواتف */
+@media (max-width: 768px) {
+    .empty-state {
+        margin: 12px;
+        padding: 32px 20px;
+    }
+    
+    .empty-state .material-symbols-outlined {
+        font-size: 40px;
+        width: 64px;
+        height: 64px;
+    }
+    
+    .empty-state p {
+        font-size: 15px;
+    }
+}
+
+/* تحديث أنماط عرض رسالة عدم وجود نتائج */
+.no-results {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 400px;
+    z-index: 1;
+}
+
+/* تحديث أنماط الحاوية الرئيسية للمحتوى */
+.passwords-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    position: relative;
+    min-height: 400px;
+}
+
+/* تحسين المظهر على الهواتف */
+@media (max-width: 768px) {
+    .no-results {
+        position: static;
+        transform: none;
+        margin: 20px auto;
+    }
+    
+    .passwords-grid {
+        min-height: 300px;
+    }
+}
+
+.password-card .card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    /* إضافة خصائص قطع النص */
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* تحديد الحد الأقصى للعرض */
+    max-width: 250px;
+}
+
+/* تعديل العرض للشاشات الصغيرة */
+@media (max-width: 768px) {
+    .password-card .card-header h3 {
+        max-width: 200px;
+    }
+}
+
+/* تعديل العرض للشاشات الصغيرة جداً */
+@media (max-width: 480px) {
+    .password-card .card-header h3 {
+        max-width: 150px;
+    }
+}
+
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    width: 100%;
+    border-radius: 10px;
+    margin-top: auto;
+    margin-bottom: 12px;
+    transition: background 0.3s;
 }
