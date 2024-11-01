@@ -326,6 +326,26 @@ function filterByApp(appName) {
     });
 }
 
+// دالة تحديث زر النسخ
+function updateCopyButton(passwordId) {
+    const card = document.querySelector(`.password-card[data-id="${passwordId}"]`);
+    if (!card) return;
+
+    const copyBtn = card.querySelector('.copy-btn');
+    const copyIcon = copyBtn.querySelector('.material-symbols-outlined');
+
+    // تغيير الأيقونة إلى علامة صح
+    copyIcon.textContent = 'check';
+    copyBtn.classList.add('success');
+
+    // إعادة الأيقونة إلى حالتها الأصلية بعد ثانيتين
+    setTimeout(() => {
+        copyIcon.textContent = 'content_copy';
+        copyBtn.classList.remove('success');
+    }, 2000);
+}
+
+// تحديث دالة نسخ كلمة المرور
 async function copyPassword(passwordId) {
     // التحقق من حالة المصادقة
     if (!auth.currentUser) {
@@ -348,7 +368,7 @@ async function copyPassword(passwordId) {
         // نسخ كلمة المرور إلى الحافظة
         await navigator.clipboard.writeText(passwordData.password);
 
-        // تحدي واجهة المستخدم
+        // تحديث واجهة المستخدم
         updateCopyButton(passwordId);
         
         // إظهار رسالة النجاح
@@ -409,7 +429,7 @@ async function deletePassword(passwordId) {
             resolve(false);
         });
 
-        // إزالة toast بع 10 ثواني إذا لم يتم اتخاذ إجراء
+        // إزالة toast بع 10 ثواني إ��ا لم يتم اتخاذ إجراء
         setTimeout(() => {
             if (toast.parentElement) {
                 toast.remove();

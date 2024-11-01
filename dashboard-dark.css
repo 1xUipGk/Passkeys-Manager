@@ -1,26 +1,6 @@
-/* Dark Mode Styles */
-:root {
-    --bg-primary: #fffdfc;
-    --bg-secondary: #fffdfc;
-    --text-primary: #08102b;
-    --text-secondary: #989b9f;
-    --border-color: #e6e6e6;
-    --hover-bg: #f1f1f0;
-    --card-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    --modal-bg: rgba(0,0,0,0.5);
-    --toast-bg: #fffdfc;
-    --toast-text: #08102b;
-    --input-bg: #fffdfc;
-    --input-text: #08102b;
-    --input-border: #e6e6e6;
-    --dropdown-bg: #fffdfc;
-    --dropdown-text: #08102b;
-    --dropdown-hover: #f1f1f0;
-    --empty-state-bg: #f6f6f6;
-    --empty-state-text: #989b9f;
-}
-
+/* Dark Mode Colors */
 body.dark-mode {
+    /* الألوان الأساسية */
     --bg-primary: #1e1e1e;
     --bg-secondary: #2d2d30;
     --text-primary: #fffdfc;
@@ -29,416 +9,394 @@ body.dark-mode {
     --hover-bg: #252526;
     --card-shadow: 0 2px 8px rgba(0,0,0,0.2);
     --modal-bg: rgba(0,0,0,0.7);
-    --toast-bg: #2d2d30;
-    --toast-text: #fffdfc;
+
+    /* ألوان الإدخال */
     --input-bg: #252526;
     --input-text: #fffdfc;
     --input-border: #343435;
+    --input-focus: #482dff;
+
+    /* ألوان القوائم */
     --dropdown-bg: #2d2d30;
     --dropdown-text: #fffdfc;
     --dropdown-hover: #252526;
+
+    /* ألوان الحالة الفارغة */
     --empty-state-bg: #252526;
+    --empty-state-icon: #41B375;
     --empty-state-text: #989b9f;
+
+    /* ألوان البحث */
+    --search-icon: #989b9f;
+    --search-bg: #252526;
+    --search-text: #fffdfc;
+    --search-border: #343435;
+
+    /* ألوان الأيقونات */
+    --icon-color: #989b9f;
+    --icon-hover: #fffdfc;
+    --icon-active: #482dff;
+
+    /* ألوان التطبيقات */
+    --app-icon-bg: #252526;
+    --app-new-bg: #252526;
+    --app-new-border: #343435;
+    --app-new-text: #482dff;
+    --app-custom-bg: #252526;
+    --app-custom-text: #482dff;
+
+    /* ألوان الإشعارات */
+    --toast-bg: #2d2d30;
+    --toast-text: #fffdfc;
+    --toast-success: #41B375;
+    --toast-error: #f44336;
+    --toast-warning-bg: #2d2d30;
+    --toast-warning-icon: #ff3f56;
+    --toast-warning-text: #fffdfc;
+    --toast-warning-subtext: #989b9f;
+    --toast-warning-confirm: #ff3f56;
+    --toast-warning-cancel-bg: #252526;
+    --toast-warning-cancel-text: #fffdfc;
+
+    /* ألوان القائمة المنسدلة */
+    --menu-bg: #2d2d30;
+    --menu-text: #fffdfc;
+    --menu-hover: #252526;
+    --menu-edit: #482dff;
+    --menu-delete: #ff3f56;
+    --menu-edit-hover: #252526;
+    --menu-delete-hover: #252526;
+
+    /* إضافة الألوان من dashboard.css */
+    --logo-color: #fffdfc;
+    --logo-icon: #482dff;
+    --close-btn: #989b9f;
+    --mobile-menu-bg: #2d2d30;
+    --mobile-menu-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    --sidebar-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    --add-btn-bg: #4285f4; /* نحتفظ بلون الأزرار كما هي */
+    --add-btn-hover: #3367d6;
+    --logout-btn-bg: #ff3b30;
+    --logout-btn-hover: #dc352b;
+    --search-box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    --card-hover-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    --modal-content-bg: #2d2d30;
+    --modal-header-border: #343435;
+    --generate-btn-bg: #252526;
+    --generate-btn-border: #343435;
+    --eye-btn-bg: #252526;
+    --eye-btn-color: #989b9f;
+    --toast-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    --dropdown-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    --loader-bg: #2d2d30;
+    --loader-icon: #482dff;
+    --search-results-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    --app-search-hover: #252526;
+    --app-new-site-bg: #252526;
+    --app-new-site-border: #482dff;
+    --app-custom-domain-bg: #252526;
+    --app-custom-domain-border: #343435;
+    --empty-state-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    --scrollbar-track: #1e1e1e;
+    --scrollbar-thumb: #343435;
+    --scrollbar-thumb-hover: #989b9f;
+
+    /* إضافة المزيد من الألوان */
+    /* ألوان نافذة التحذير */
+    --warning-overlay: rgba(0, 0, 0, 0.8);
+    --warning-bg: #2d2d30;
+    --warning-border: #343435;
+    --warning-title: #fffdfc;
+    --warning-text: #989b9f;
+    --warning-icon-bg: #252526;
+    --warning-confirm-bg: #ff3f56;
+    --warning-confirm-hover: #e63950;
+    --warning-cancel-bg: #252526;
+    --warning-cancel-hover: #343435;
+    --warning-cancel-text: #fffdfc;
+
+    /* ألوان النموذج */
+    --form-label: #989b9f;
+    --form-input-bg: #252526;
+    --form-input-border: #343435;
+    --form-input-text: #fffdfc;
+    --form-input-placeholder: #666666;
+    --form-input-focus-border: #482dff;
+    --form-button-hover: #252526;
+
+    /* ألوان الرسائل */
+    --message-success-bg: #41B375;
+    --message-error-bg: #ff3f56;
+    --message-text: #fffdfc;
+
+    /* ألوان إضافية للقائمة */
+    --menu-item-hover: #252526;
+    --menu-item-active: #343435;
+    --menu-border: #343435;
+    --menu-shadow: 0 4px 20px rgba(0,0,0,0.3);
+
+    /* ألوان حقل كلمة المرور */
+    --password-input-bg: #252526;
+    --password-input-border: #343435;
+    --password-input-text: #fffdfc;
+    --password-toggle-color: #989b9f;
+    --password-toggle-hover: #fffdfc;
+    --password-toggle-active: #482dff;
+
+    /* ألوان البحث الإضافية */
+    --search-placeholder: #666666;
+    --search-results-border: #343435;
+    --search-item-hover: #252526;
+    --search-item-active: #343435;
 }
 
 /* تطبيق المتغيرات على العناصر */
-body {
+body.dark-mode {
     background: var(--bg-primary);
     color: var(--text-primary);
-    font-family: var(--fontB);
 }
 
-.sidebar {
+body.dark-mode .logo .material-symbols-outlined {
+    color: var(--logo-icon);
+}
+
+body.dark-mode .logo h1 {
+    color: var(--logo-color);
+}
+
+body.dark-mode .mobile-menu-btn {
+    background: var(--mobile-menu-bg);
+    box-shadow: var(--mobile-menu-shadow);
+}
+
+body.dark-mode .sidebar {
     background: var(--bg-secondary);
-    border-right: var(--headerL) solid var(--border-color);
+    box-shadow: var(--sidebar-shadow);
 }
 
-.logo h1 {
-    color: var(--text-primary);
+body.dark-mode .close-sidebar {
+    color: var(--close-btn);
 }
 
-.search-box {
-    background: var(--input-bg);
-    border: 1px solid var(--input-border);
+/* نحتفظ بألوان الأزرار الأساسية كما هي */
+
+body.dark-mode .search-box {
+    background: var(--search-bg);
+    box-shadow: var(--search-box-shadow);
 }
 
-.search-box input {
-    color: var(--input-text);
-    background: transparent;
-}
-
-.search-box input::placeholder {
-    color: var(--text-secondary);
-}
-
-.password-card {
+body.dark-mode .password-card {
     background: var(--bg-secondary);
     box-shadow: var(--card-shadow);
 }
 
-.card-header h3 {
-    color: var(--text-primary);
+body.dark-mode .password-card:hover {
+    box-shadow: var(--card-hover-shadow);
 }
 
-.username {
-    color: var(--text-secondary);
+body.dark-mode .modal-content {
+    background: var(--modal-content-bg);
 }
 
-.password-input input {
-    background: var(--input-bg);
-    border-color: var(--input-border);
-    color: var(--input-text);
+body.dark-mode .modal-header {
+    border-bottom-color: var(--modal-header-border);
 }
 
-.modal-content {
-    background: var(--bg-secondary);
+body.dark-mode .generate-btn {
+    background: var(--generate-btn-bg);
+    border-color: var(--generate-btn-border);
 }
 
-.modal-header h2 {
-    color: var(--text-primary);
+body.dark-mode .eye-btn {
+    background: var(--eye-btn-bg);
+    color: var(--eye-btn-color);
 }
 
-.input-group label {
-    color: var(--text-secondary);
+body.dark-mode .toast {
+    box-shadow: var(--toast-shadow);
 }
 
-.input-group input {
-    background: var(--input-bg);
-    border-color: var(--input-border);
-    color: var(--input-text);
+body.dark-mode .dropdown-menu {
+    box-shadow: var(--dropdown-shadow);
 }
 
-.dropdown-menu {
-    background: var(--dropdown-bg);
-    border: 1px solid var(--border-color);
+body.dark-mode .loading-screen {
+    background: var(--loader-bg);
 }
 
-.dropdown-menu button {
-    color: var(--dropdown-text);
+body.dark-mode .loader .material-symbols-outlined {
+    color: var(--loader-icon);
 }
 
-.dropdown-menu button:hover {
-    background: var(--dropdown-hover);
+body.dark-mode .search-results {
+    box-shadow: var(--search-results-shadow);
 }
 
-.empty-state {
+body.dark-mode .app-search-item:hover {
+    background: var(--app-search-hover);
+}
+
+body.dark-mode .app-search-item.new-site {
+    background: var(--app-new-site-bg);
+    border-color: var(--app-new-site-border);
+}
+
+body.dark-mode .app-search-item.custom-domain {
+    background: var(--app-custom-domain-bg);
+    border-color: var(--app-custom-domain-border);
+}
+
+body.dark-mode .empty-state {
+    box-shadow: var(--empty-state-shadow);
+}
+
+/* تحديث شريط التمرير */
+body.dark-mode::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+body.dark-mode::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+}
+
+body.dark-mode::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+/* تطبيق الألوان الجديدة */
+body.dark-mode .toast.warning {
+    background: var(--warning-bg);
+    border-color: var(--warning-border);
+}
+
+body.dark-mode .toast.warning .toast-message {
+    color: var(--warning-title);
+}
+
+body.dark-mode .toast.warning .toast-submessage {
+    color: var(--warning-text);
+}
+
+body.dark-mode .toast.warning .toast-icon {
+    background: var(--warning-icon-bg);
+    color: var(--warning-confirm-bg);
+}
+
+body.dark-mode .toast.warning .confirm-btn {
+    background: var(--warning-confirm-bg);
+    color: var(--warning-cancel-text);
+}
+
+body.dark-mode .toast.warning .confirm-btn:hover {
+    background: var(--warning-confirm-hover);
+}
+
+body.dark-mode .toast.warning .cancel-btn {
+    background: var(--warning-cancel-bg);
+    color: var(--warning-cancel-text);
+}
+
+body.dark-mode .toast.warning .cancel-btn:hover {
+    background: var(--warning-cancel-hover);
+}
+
+/* تحديث ألوان النموذج */
+body.dark-mode .input-group label {
+    color: var(--form-label);
+}
+
+body.dark-mode .input-group input {
+    background: var(--form-input-bg);
+    border-color: var(--form-input-border);
+    color: var(--form-input-text);
+}
+
+body.dark-mode .input-group input::placeholder {
+    color: var(--form-input-placeholder);
+}
+
+body.dark-mode .input-group input:focus {
+    border-color: var(--form-input-focus-border);
+}
+
+/* تحديث ألوان حقل كلمة المرور */
+body.dark-mode .password-input input {
+    background: var(--password-input-bg);
+    border-color: var(--password-input-border);
+    color: var(--password-input-text);
+}
+
+body.dark-mode .password-input .toggle-password {
+    color: var(--password-toggle-color);
+}
+
+body.dark-mode .password-input .toggle-password:hover {
+    color: var(--password-toggle-hover);
+    background: var(--form-button-hover);
+}
+
+body.dark-mode .password-input .toggle-password.active {
+    color: var(--password-toggle-active);
+}
+
+/* تحديث ألوان البحث */
+body.dark-mode .search-box input::placeholder {
+    color: var(--search-placeholder);
+}
+
+body.dark-mode .search-results {
+    border-color: var(--search-results-border);
+}
+
+body.dark-mode .app-search-item:hover {
+    background: var(--search-item-hover);
+}
+
+body.dark-mode .app-search-item.active {
+    background: var(--search-item-active);
+}
+
+/* تحديث ألوان الرسائل */
+body.dark-mode .toast.success {
+    background: var(--message-success-bg);
+    color: var(--message-text);
+}
+
+body.dark-mode .toast.error {
+    background: var(--message-error-bg);
+    color: var(--message-text);
+}
+
+/* تحديث ألوان القائمة المنسدلة */
+body.dark-mode .dropdown-menu {
+    border-color: var(--menu-border);
+    box-shadow: var(--menu-shadow);
+}
+
+body.dark-mode .dropdown-menu button:hover {
+    background: var(--menu-item-hover);
+}
+
+body.dark-mode .dropdown-menu button.active {
+    background: var(--menu-item-active);
+}
+
+/* تحديث ألوان الحالة الفارغة */
+body.dark-mode .empty-state {
     background: var(--empty-state-bg);
 }
 
-.empty-state p {
-    color: var(--empty-state-text);
-}
-
-.toast {
-    background: var(--toast-bg);
-    color: var(--toast-text);
-}
-
-/* Loading Screen */
-.loading-screen {
-    background: var(--bg-primary);
-}
-
-.loader p {
+body.dark-mode .empty-state .material-symbols-outlined {
+    background: var(--warning-icon-bg);
     color: var(--text-secondary);
 }
 
-/* Search Results */
-.search-results {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-}
-
-.app-search-item:hover {
-    background: var(--hover-bg);
-}
-
-.app-search-item span {
-    color: var(--text-primary);
-}
-
-/* Mobile Menu */
-.mobile-menu-btn {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-}
-
-/* Theme Toggle Button */
-.theme-toggle-btn {
+body.dark-mode .empty-state p {
     color: var(--text-secondary);
 }
 
-.theme-toggle-btn:hover {
-    background: var(--hover-bg);
-}
-
-/* Actions Buttons */
-.actions button {
-    color: var(--text-secondary);
-}
-
-.actions button:hover {
-    background: var(--hover-bg);
-    color: var(--text-primary);
-}
-
-/* Modal Overlay */
-.modal {
-    background: var(--modal-bg);
-}
-
-/* Toast Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* تحديث أنماط النصوص */
-input::placeholder {
-    color: var(--text-secondary);
-}
-
-/* تحديث أنماط التمرير */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-primary);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--text-secondary);
-}
-
-/* تحديث أنماط التحديد */
-::selection {
+/* تحديث ألوان النص المحدد */
+body.dark-mode ::selection {
     background: var(--accent-color);
-    color: #ffffff;
-}
-
-/* تحديث عنوان الصفحة الرئيسية */
-.main-header h2 {
-    font-size: var(--headerT);
-    font-weight: var(--headerW);
-    color: var(--headerC);
-}
-
-/* تحديث تأثيرات hover */
-.add-password-btn:hover,
-.logout-btn:hover,
-.save-btn:hover {
-    filter: brightness(0.9);
-}
-
-.theme-toggle-btn:hover,
-.menu-dots .menu-btn:hover,
-.actions button:hover,
-.app-search-item:hover,
-.dropdown-menu button:hover {
-    background: var(--mobHv);
-}
-
-/* تحديث نافذة تأكيد الحذف */
-.toast.warning {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-}
-
-.toast.warning .toast-message {
     color: var(--text-primary);
-}
-
-.toast.warning .toast-submessage {
-    color: var(--text-secondary);
-}
-
-.toast.warning .confirm-btn {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-}
-
-.toast.warning .confirm-btn:hover {
-    filter: brightness(0.9);
-}
-
-.toast.warning .cancel-btn {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-}
-
-.toast.warning .cancel-btn:hover {
-    background: var(--hover-bg);
-}
-
-.toast.warning::before {
-    background: var(--modal-bg);
-}
-
-/* إضافة المزيد من العناصر للوضع المظلم */
-
-/* Search Section */
-.search-section input {
-    background: var(--input-bg);
-    border-color: var(--input-border);
-    color: var(--input-text);
-}
-
-.search-section input:hover {
-    border-color: var(--darkU);
-}
-
-.search-section input:focus {
-    border-color: var(--accent-color);
-    background: var(--darkBs);
-}
-
-/* App Icon */
-.app-icon {
-    background: var(--darkBs);
-    border: 1px solid var(--darkW);
-}
-
-/* Additional Hover States */
-.close-btn:hover {
-    background: var(--mobHv);
-}
-
-.password-input .generate-btn:hover,
-.password-input .toggle-password:hover,
-.password-input .eye-btn:hover {
-    background: var(--mobHv);
-    color: var(--darkT);
-}
-
-.app-search-item.new-site,
-.app-search-item.custom-domain {
-    background: var(--bg-secondary);
-    border-color: var(--border-color);
-}
-
-.app-search-item.new-site:hover,
-.app-search-item.custom-domain:hover {
-    background: var(--hover-bg);
-}
-
-.app-search-item.new-site span,
-.app-search-item.custom-domain span {
-    color: var(--text-primary);
-}
-
-/* Modal Elements */
-.modal .close-btn {
-    color: var(--text-secondary);
-}
-
-.modal .close-btn:hover {
-    background: var(--mobHv);
-    color: var(--darkT);
-}
-
-/* Form Elements */
-.input-group input:focus {
-    border-color: var(--accent-color);
-    background: var(--darkBs);
-}
-
-/* Password Input Icons */
-.password-input .material-symbols-outlined {
-    color: var(--text-secondary);
-}
-
-.password-input button.active {
-    color: var(--accent-color);
-    background: var(--darkBs);
-}
-
-/* Dropdown Menu Items */
-.dropdown-menu button:first-child {
-    color: var(--accent-color);
-}
-
-.dropdown-menu button:first-child:hover {
-    background: var(--darkBs);
-}
-
-.dropdown-menu button:last-child {
-    color: var(--darkU);
-}
-
-.dropdown-menu button:last-child:hover {
-    background: var(--darkBs);
-}
-
-/* Search Results */
-.search-results {
-    background: var(--bg-secondary);
-    border-color: var(--darkW);
-}
-
-.app-suggestion:hover {
-    background: var(--mobHv);
-}
-
-/* Mobile Menu */
-.mobile-menu-btn:hover {
-    background: var(--mobHv);
-}
-
-/* Additional States */
-.password-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-.add-password-btn:active,
-.save-btn:active,
-.logout-btn:active {
-    transform: scale(0.98);
-}
-
-/* Focus States */
-button:focus-visible,
-input:focus-visible {
-    outline: 2px solid var(--accent-color);
-    outline-offset: 2px;
-}
-
-/* Active States */
-.toggle-password.active,
-.eye-btn.active {
-    color: var(--accent-color);
-    background: var(--darkBs);
-}
-
-/* Toast Notifications */
-.toast.success {
-    border-left: 4px solid var(--darkU);
-}
-
-.toast.error {
-    border-left: 4px solid var(--synxRed);
-}
-
-/* Loading Animation */
-.loader .material-symbols-outlined {
-    color: var(--accent-color);
-}
-
-/* Empty State */
-.empty-state .material-symbols-outlined {
-    color: var(--text-secondary);
-    background: var(--darkBs);
 }
