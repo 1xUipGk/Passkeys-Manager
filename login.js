@@ -51,10 +51,9 @@ loginForm.addEventListener('submit', async (e) => {
     
     try {
         const result = await auth.signInWithEmailAndPassword(email, password);
-        localStorage.setItem('user', JSON.stringify(result.user));
+        showMessage('Login successful!', 'success');
         window.location.href = 'dashboard.html';
     } catch (error) {
-        console.error('Error signing in:', error);
         let errorMessage = 'Error signing in. Please try again.';
         
         switch (error.code) {
@@ -70,7 +69,7 @@ loginForm.addEventListener('submit', async (e) => {
                 break;
         }
         
-        alert(errorMessage);
+        showMessage(errorMessage);
     }
 });
 
@@ -80,4 +79,16 @@ auth.onAuthStateChanged((user) => {
         localStorage.setItem('user', JSON.stringify(user));
         window.location.href = 'dashboard.html';
     }
-}); 
+});
+
+// إضافة وظيفة عرض الرسائل
+function showMessage(message, type = 'error') {
+    const messageContainer = document.querySelector('.message-container');
+    messageContainer.textContent = message;
+    messageContainer.className = `message-container ${type}`;
+    
+    // إخفاء الرسالة بعد 5 ثواني
+    setTimeout(() => {
+        messageContainer.style.display = 'none';
+    }, 5000);
+} 

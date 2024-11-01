@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "passwords": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        ".indexOn": ["userId"],
+        "$passwordId": {
+          ".validate": "newData.hasChildren(['appName', 'password', 'userId'])",
+          "userId": {
+            ".validate": "newData.val() === auth.uid"
+          }
+        }
+      }
+    }
+  }
+} 

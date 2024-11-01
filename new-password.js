@@ -18,9 +18,17 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 
 // Get action code from URL
-const urlParams = new URLSearchParams(window.location.search);
-const mode = urlParams.get('mode');
-const actionCode = urlParams.get('oobCode');
+function getParameterByName(name) {
+    const url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+    const results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+const actionCode = getParameterByName('oobCode');
 
 // DOM Elements
 const form = document.querySelector('.new-password-form');
@@ -66,8 +74,13 @@ form.addEventListener('submit', async (e) => {
 });
 
 // Verify action code when page loads
-auth.verifyPasswordResetCode(actionCode).catch(error => {
-    console.error('Error verifying reset code:', error);
-    alert('Invalid or expired password reset link. Please request a new one.');
+if (actionCode) {
+    auth.verifyPasswordResetCode(actionCode).catch(error => {
+        console.error('Error verifying reset code:', error);
+        alert('Invalid or expired password reset link. Please request a new one.');
+        window.location.href = 'login.html';
+    });
+} else {
+    alert('Invalid password reset link. Please request a new one.');
     window.location.href = 'login.html';
-}); 
+} 

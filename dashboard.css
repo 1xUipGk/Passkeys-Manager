@@ -1,3 +1,4 @@
+/* Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -6,51 +7,86 @@
 }
 
 body {
-    display: flex;
+    background: #f5f5f7;
     min-height: 100vh;
-    background: #f5f5f5;
+    display: flex;
+    overflow-x: hidden;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: white;
+    border: none;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 100;
 }
 
 /* Sidebar */
 .sidebar {
     width: 280px;
     background: white;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 24px;
     display: flex;
     flex-direction: column;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 30px;
+    gap: 12px;
 }
 
 .logo .material-symbols-outlined {
-    font-size: 32px;
+    font-size: 28px;
     color: #4285f4;
 }
 
 .logo h1 {
-    font-size: 24px;
+    font-size: 20px;
     color: #333;
 }
 
+.close-sidebar {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+}
+
 .add-password-btn {
-    padding: 12px;
     background: #4285f4;
     color: white;
     border: none;
-    border-radius: 6px;
+    padding: 12px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     cursor: pointer;
-    margin-bottom: 20px;
+    font-size: 15px;
     transition: background 0.3s;
+    margin-bottom: 24px;
 }
 
 .add-password-btn:hover {
@@ -60,168 +96,304 @@ body {
 .apps-list {
     flex: 1;
     overflow-y: auto;
+    margin: 0 -24px;
+    padding: 0 24px;
 }
 
 .app-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     padding: 12px;
     cursor: pointer;
-    border-radius: 6px;
-    transition: background 0.3s;
-}
-
-.app-item img {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
+    border-radius: 10px;
+    transition: background 0.2s;
+    margin-bottom: 4px;
 }
 
 .app-item:hover {
-    background: #f5f5f5;
+    background: #f5f5f7;
 }
 
-.app-item span {
-    font-size: 14px;
-    color: #333;
+.app-item img {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+}
+
+.logout-btn {
+    margin-top: 20px;
+    background: #ff3b30;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.logout-btn:hover {
+    background: #dc352b;
 }
 
 /* Main Content */
 .main-content {
     flex: 1;
-    padding: 30px;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.main-header h2 {
+    font-size: 24px;
+    color: #333;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 10px;
+    padding: 0 16px;
+    width: 300px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.search-box input {
+    border: none;
+    padding: 12px;
+    width: 100%;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-box .material-symbols-outlined {
+    color: #666;
 }
 
 .passwords-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
 }
 
+/* Password Card */
 .password-card {
     background: white;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    opacity: 1;
+    transform: scale(1);
 }
 
 .password-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.app-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-    position: relative;
-    padding-left: 50px;
+.card-header {
+    margin-bottom: 16px;
 }
 
-.app-info img {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    background: #eaf0f2;
-    padding: 8px;
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.app-info h3 {
+.card-header h3 {
     font-size: 16px;
     color: #333;
-    margin: 0;
+}
+
+.card-content {
+    display: flex;
+    gap: 16px;
+}
+
+.app-icon {
+    width: 40px;
+    height: 40px;
+    background: #eaf0f2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.app-icon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
 }
 
 .credentials {
+    flex: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+.user-info {
+    flex: 1;
+}
+
 .username {
     font-size: 14px;
     color: #666;
+    margin-bottom: 4px;
+}
+
+.password-input {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.password-input input {
+    width: 100%;
+    padding: 14px;
+    padding-right: 80px; /* مساحة للأزرار */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+.password-input input:focus {
+    outline: none;
+    border-color: #4285f4;
+}
+
+.password-input .toggle-password {
+    position: absolute;
+    right: 44px; /* مساحة لزر التوليد */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.3s;
+}
+
+.password-input .toggle-password:hover {
+    background: #f5f5f7;
+    color: #333;
+}
+
+.password-input .generate-btn {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.3s;
+}
+
+.password-input .generate-btn:hover {
+    background: #f5f5f7;
+    color: #333;
 }
 
 .actions {
     display: flex;
     gap: 8px;
-    align-items: center;
 }
 
-.toggle-password,
-.copy-btn,
-.menu-btn {
-    background: none;
-    border: none;
-    padding: 8px;
-    cursor: pointer;
-    color: #666;
-    border-radius: 4px;
+.actions button {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    transition: background 0.2s;
-}
-
-.toggle-password:hover,
-.copy-btn:hover,
-.menu-btn:hover {
-    background: #f5f5f5;
-    color: #333;
-}
-
-.password-input {
+    justify-content: center;
+    border: none;
     background: transparent;
-    border: none;
-    font-size: 14px;
     color: #666;
-    padding: 4px 0;
-    width: 150px;
-}
-
-.password-input:focus {
-    outline: none;
-}
-
-.user-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.copy-btn, .menu-dots {
-    background: none;
-    border: none;
     cursor: pointer;
-    border-radius: 4px;
-    color: #666;
-    transition: background 0.3s;
+    transition: all 0.2s;
 }
 
-.copy-btn:hover, .menu-dots:hover {
-    background: #f5f5f5;
+.actions button:hover {
+    background: #f5f5f7;
     color: #333;
 }
 
-/* Modal */
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 1000;
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .mobile-menu-btn,
+    .close-sidebar {
+        display: flex;
+    }
+
+    .main-content {
+        padding: 80px 16px 24px;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .passwords-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Modal Styles */
 .modal {
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     background: rgba(0,0,0,0.5);
     display: none;
+    align-items: center;
     justify-content: center;
-    align-items: flex-end;
-    height: 100vh;
+    z-index: 1000;
 }
 
 .modal.active {
@@ -232,25 +404,35 @@ body {
     background: white;
     width: 100%;
     max-width: 500px;
-    border-radius: 20px 20px 0 0;
-    padding: 30px;
-    animation: slideUp 0.3s ease-out;
+    margin: 20px;
+    border-radius: 12px;
+    padding: 24px;
+    animation: modalShow 0.3s ease-out;
 }
 
-@keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+@keyframes modalShow {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
 }
 
 .modal-header h2 {
     font-size: 20px;
+    font-weight: 500;
     color: #333;
 }
 
@@ -259,19 +441,21 @@ body {
     border: none;
     cursor: pointer;
     color: #666;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.search-section input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    font-size: 14px;
+.close-btn:hover {
+    background: #f5f5f7;
 }
 
+/* Form Styles */
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .input-group label {
@@ -285,20 +469,25 @@ body {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
-    border-radius: 6px;
+    border-radius: 10px;
     font-size: 14px;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #4285f4;
 }
 
 .password-input {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .generate-btn {
     padding: 0 12px;
-    background: #f5f5f5;
+    background: #f5f5f7;
     border: 1px solid #ddd;
-    border-radius: 6px;
+    border-radius: 10px;
     cursor: pointer;
 }
 
@@ -308,9 +497,9 @@ body {
     background: #4285f4;
     color: white;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    border-radius: 10px;
     font-size: 16px;
+    cursor: pointer;
     transition: background 0.3s;
 }
 
@@ -318,82 +507,78 @@ body {
     background: #3367d6;
 }
 
-.logout-btn {
-    margin-top: auto;
-    padding: 12px;
-    background: #f44336;
-    color: white;
-    border: none;
-    border-radius: 6px;
+/* Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
+    z-index: 9999;
+    transition: opacity 0.3s, visibility 0.3s;
 }
 
-.logout-btn:hover {
-    background: #d32f2f;
+.loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
 }
 
-/* Add these styles to dashboard.css */
+.loader {
+    text-align: center;
+}
+
+.loader .material-symbols-outlined {
+    font-size: 48px;
+    color: #4285f4;
+    animation: bounce 1s infinite;
+}
+
+.loader p {
+    margin-top: 16px;
+    color: #666;
+    font-size: 16px;
+}
+
+/* Search Results */
 .search-results {
     position: absolute;
-    top: 100%;
+    top: calc(100% - 8px);
     left: 0;
     right: 0;
     background: white;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    margin-top: 5px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     max-height: 300px;
     overflow-y: auto;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    z-index: 1000;
+    z-index: 100;
 }
 
 .app-search-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px;
+    gap: 12px;
+    padding: 12px 16px;
     cursor: pointer;
     transition: background 0.2s;
 }
 
 .app-search-item:hover {
-    background: #f5f5f5;
+    background: #f5f5f7;
 }
 
 .app-search-item img {
-    width: 20px;
-    height: 20px;
-}
-
-.search-section {
-    position: relative;
-    margin-bottom: 20px;
-}
-
-/* Improve modal styling */
-.modal-body {
-    position: relative;
-}
-
-.add-new-app {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background: #f5f5f5;
-    border: 1px solid #ddd;
+    width: 24px;
+    height: 24px;
     border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
 }
 
-.add-new-app:hover {
-    background: #e5e5e5;
+.app-search-item span {
+    font-size: 14px;
+    color: #333;
 }
 
 /* Toast Container */
@@ -402,19 +587,21 @@ body {
     bottom: 20px;
     right: 20px;
     z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .toast {
     background: white;
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin-top: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
     gap: 12px;
-    animation: slideIn 0.3s ease-out;
     min-width: 300px;
+    animation: slideIn 0.3s ease-out;
 }
 
 .toast.success {
@@ -425,8 +612,8 @@ body {
     border-left: 4px solid #f44336;
 }
 
-.toast.info {
-    border-left: 4px solid #2196F3;
+.toast.warning {
+    border-left: 4px solid #ff9800;
 }
 
 .toast-icon {
@@ -441,18 +628,52 @@ body {
     color: #f44336;
 }
 
-.toast.info .toast-icon {
-    color: #2196F3;
+.toast.warning .toast-icon {
+    color: #ff9800;
 }
 
-.toast-content {
-    flex: 1;
+/* Dropdown Menu */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 8px;
+    min-width: 150px;
+    display: none;
+    z-index: 100;
 }
 
-.toast-message {
+.dropdown-menu.active {
+    display: block;
+}
+
+.dropdown-menu button {
+    width: 100%;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 6px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    justify-content: normal;
     color: #333;
     font-size: 14px;
-    margin: 0;
+    transition: background 0.2s;
+}
+
+.dropdown-menu button:hover {
+    background: #f5f5f7;
+}
+
+/* Animations */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
 @keyframes slideIn {
@@ -477,7 +698,665 @@ body {
     }
 }
 
-/* أضف هذه الأنماط إلى قسم التنبيهات */
+/* Mobile Menu */
+.mobile-menu-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .close-sidebar {
+        display: block;
+    }
+}
+
+/* تحديث أنماط النافذة المنبثقة */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px;
+    border-radius: 12px;
+    padding: 24px;
+    animation: modalShow 0.3s ease-out;
+}
+
+/* تحديث أنماط للهواتف */
+@media (max-width: 768px) {
+    .modal {
+        align-items: flex-end;
+    }
+
+    .modal-content {
+        width: 100%;
+        margin: 0;
+        border-radius: 20px 20px 0 0;
+        animation: slideUp 0.3s ease-out;
+        max-width: none;
+    }
+
+    .modal-header {
+        padding-bottom: 16px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .modal-body {
+        padding-top: 16px;
+    }
+
+    .search-section input {
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    .add-new-app {
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    .input-group input {
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    .save-btn {
+        padding: 16px;
+        font-size: 16px;
+        margin-top: 24px;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(100%);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+}
+
+/* تحديث الرسوم المتحركة */
+@keyframes modalShow {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* تحديث أنماط نافذة Add New Password */
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px;
+    border-radius: 12px;
+    padding: 24px;
+    animation: modalShow 0.3s ease-out;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    font-weight: 500;
+    color: #333;
+}
+
+.search-section {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.search-section input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+    margin-bottom: 12px;
+}
+
+.search-section input:focus {
+    outline: none;
+    border-color: #4285f4;
+}
+
+.add-new-app {
+    width: 100%;
+    padding: 14px;
+    background: #f5f5f7;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.add-new-app:hover {
+    background: #e5e5e7;
+    border-color: #ccc;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #4285f4;
+}
+
+.password-input {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.password-input input {
+    width: 100%;
+    padding: 14px;
+    padding-right: 80px; /* مساحة للأزرار */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+.password-input input:focus {
+    outline: none;
+    border-color: #4285f4;
+}
+
+.password-input .toggle-password {
+    position: absolute;
+    right: 44px; /* مساحة لزر التوليد */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.3s;
+}
+
+.password-input .toggle-password:hover {
+    background: #f5f5f7;
+    color: #333;
+}
+
+.password-input .generate-btn {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.3s;
+}
+
+.password-input .generate-btn:hover {
+    background: #f5f5f7;
+    color: #333;
+}
+
+/* تحديث أنماط الأزرار عند التفعيل */
+.password-input button.active {
+    color: #4285f4;
+    background: #f5f5f7;
+}
+
+.generate-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.3s;
+}
+
+.generate-btn:hover {
+    background: #f5f5f7;
+    color: #333;
+}
+
+.save-btn {
+    width: 100%;
+    padding: 14px;
+    background: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 24px;
+}
+
+.save-btn:hover {
+    background: #3367d6;
+}
+
+/* تحديث أنماط القائمة المنبثقة للتطبيقات */
+.search-results {
+    position: absolute;
+    top: calc(100% - 8px);
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.app-search-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.app-search-item:hover {
+    background: #f5f5f7;
+}
+
+.app-search-item img {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+}
+
+.app-search-item span {
+    font-size: 14px;
+    color: #333;
+}
+
+/* تحديث الأنماط للهواتف */
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 0;
+        border-radius: 20px 20px 0 0;
+        max-width: none;
+    }
+
+    .search-section input,
+    .add-new-app,
+    .input-group input,
+    .save-btn {
+        padding: 16px;
+        font-size: 16px;
+    }
+
+    .generate-btn {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* تحديث أنماط password-input في user-info */
+.user-info .password-input {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.user-info .password-input input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #666;
+    padding: 4px 0;
+}
+
+.user-info .toggle-password {
+    position: absolute;
+    right: 0;
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.user-info .toggle-password:hover {
+    background: #f5f5f7;
+    color: #333;
+}
+
+.user-info .toggle-password.active {
+    color: #4285f4;
+}
+
+/* Edit Form Styles */
+.edit-form {
+    width: 100%;
+}
+
+.edit-form .input-group {
+    margin-bottom: 16px;
+}
+
+.edit-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 14px;
+}
+
+.edit-form input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.edit-form input:focus {
+    outline: none;
+    border-color: #4285f4;
+}
+
+.edit-form .password-input {
+    position: relative;
+}
+
+.edit-form .generate-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #666;
+}
+
+.edit-form .generate-btn:hover {
+    color: #4285f4;
+}
+
+.edit-form .toast-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.edit-form .confirm-btn,
+.edit-form .cancel-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.edit-form .confirm-btn {
+    background: #4285f4;
+    color: white;
+}
+
+.edit-form .cancel-btn {
+    background: #f5f5f7;
+    color: #333;
+}
+
+/* تحديث أنماط فافذة التعديل */
+.toast.warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.toast.warning .toast-content {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px;
+    border-radius: 12px;
+    padding: 24px;
+    animation: modalShow 0.3s ease-out;
+}
+
+.toast.warning h3 {
+    font-size: 20px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.toast.warning .edit-form .input-group {
+    margin-bottom: 20px;
+}
+
+.toast.warning .edit-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.toast.warning .edit-form input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+.toast.warning .edit-form input:focus {
+    outline: none;
+    border-color: #4285f4;
+}
+
+.toast.warning .edit-form .password-input {
+    position: relative;
+    width: 100%;
+}
+
+.toast.warning .edit-form .generate-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.3s;
+}
+
+.toast.warning .edit-form .generate-btn:hover {
+    background: #f5f5f7;
+    color: #333;
+}
+
+.toast.warning .toast-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.toast.warning .confirm-btn,
+.toast.warning .cancel-btn {
+    flex: 1;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+    min-width: 100px;
+}
+
+.toast.warning .confirm-btn {
+    background: #ff3f56;
+    color: #ffffff;
+    border: none;
+}
+
+.toast.warning .confirm-btn:hover {
+    background: #e63950;
+}
+
+.toast.warning .cancel-btn {
+    background: #f5f5f7;
+    color: #333;
+    border: none;
+}
+
+.toast.warning .cancel-btn:hover {
+    background: #e5e5e7;
+}
+
+/* تحديث الأنماط للهواتف */
+@media (max-width: 768px) {
+    .toast.warning .toast-content {
+        margin: 0;
+        border-radius: 20px 20px 0 0;
+        max-width: none;
+    }
+
+    .toast.warning {
+        align-items: flex-end;
+    }
+
+    .toast.warning .edit-form input,
+    .toast.warning .confirm-btn,
+    .toast.warning .cancel-btn {
+        padding: 16px;
+        font-size: 16px;
+    }
+}
+
+/* تحديث أنماط حقل كلمة المرور */
+.password-input input {
+    width: 100%;
+    padding: 14px;
+    padding-right: 40px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+/* تحديث أنماط نافذة التأكيد */
 .toast.warning {
     position: fixed;
     top: 50%;
@@ -494,6 +1373,19 @@ body {
     flex-direction: column;
     display: flex;
     align-items: center;
+    gap: 0;
+    margin-bottom: 0;
+}
+
+.toast.warning::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: -53;
 }
 
 .toast.warning .toast-icon {
@@ -519,7 +1411,7 @@ body {
     font-size: 18px;
     font-weight: 500;
     color: #333;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
 }
 
 .toast.warning .toast-submessage {
@@ -530,13 +1422,12 @@ body {
 
 .toast.warning .toast-actions {
     display: flex;
-    justify-content: center;
     gap: 12px;
-    width: 100%;
 }
 
 .toast.warning .confirm-btn,
 .toast.warning .cancel-btn {
+    flex: 1;
     padding: 12px 24px;
     border-radius: 6px;
     font-weight: 500;
@@ -551,101 +1442,42 @@ body {
     border: none;
 }
 
+.toast.warning .confirm-btn:hover {
+    background: #e63950;
+}
+
 .toast.warning .cancel-btn {
     background: #f5f5f7;
     color: #333;
     border: none;
 }
 
-.toast.warning::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: -1;
+.toast.warning .cancel-btn:hover {
+    background: #e5e5e7;
 }
 
-/* تحديث أنماط بطاقة كلمة المرور */
-.password-card {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+/* إضافة أنيميشن لحذف البطاقة */
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
 }
 
-.card-header {
-    margin-bottom: 20px;
+.password-card.removing {
+    animation: fadeOut 0.3s ease-out forwards;
 }
 
-.card-header h3 {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-    margin: 0;
-}
-
-.card-content {
-    display: flex;
-    gap: 15px;
+/* تحديث أنماط menu-dots */
+.menu-dots {
     position: relative;
 }
 
-.app-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: #eaf0f2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.app-icon img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-}
-
-.credentials {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.user-info {
-    flex: 1;
-}
-
-.username {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 6px;
-}
-
-.password-input {
-    background: transparent;
-    border: none;
-    font-size: 14px;
-    color: #666;
-    width: 100%;
-    padding: 0;
-}
-
-.password-input:focus {
-    outline: none;
-}
-
-.actions {
-    display: flex;
-    gap: 4px;
-}
-
-.actions button {
+.menu-dots .menu-btn {
     width: 32px;
     height: 32px;
     border-radius: 8px;
@@ -656,34 +1488,26 @@ body {
     background: transparent;
     color: #666;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s;
 }
 
-.actions button:hover {
+.menu-dots .menu-btn:hover {
     background: #f5f5f7;
     color: #333;
 }
 
-.actions .material-symbols-outlined {
-    font-size: 20px;
-}
-
-/* تحديث أنماط القائمة المنسدلة */
-.menu-dots {
-    position: relative;
-}
-
 .dropdown-menu {
     position: absolute;
-    top: 100%;
-    left: 0;
+    top: calc(100% + 4px);
+    right: 0;
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    padding: 6px;
-    min-width: 150px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    padding: 8px;
+    min-width: 180px;
     display: none;
     z-index: 100;
+    animation: dropdownShow 0.2s ease-out;
 }
 
 .dropdown-menu.active {
@@ -692,76 +1516,96 @@ body {
 
 .dropdown-menu button {
     width: 100%;
-    padding: 8px 12px;
+    padding: 10px 12px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    border-radius: 6px;
-    background: transparent;
+    gap: 12px;
+    border-radius: 8px;
     border: none;
+    background: none;
     cursor: pointer;
     color: #333;
     font-size: 14px;
+    transition: all 0.2s;
     text-align: left;
-    justify-content: normal;
-}
-
-.dropdown-menu button .material-symbols-outlined {
-    margin-right: 8px;
 }
 
 .dropdown-menu button:hover {
     background: #f5f5f7;
 }
 
-/* تحديث أنماط زر النسخ */
-.copy-btn.copied {
-    color: #4CAF50;
-}
-
-.copy-btn.copied .material-symbols-outlined {
-    font-variation-settings: 'FILL' 1;
-}
-
-/* أنماط شاشة التحميل */
-.loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999999999;
-    transition: opacity 0.3s, visibility 0.3s;
-}
-
-.loading-screen.hidden {
-    opacity: 0;
-    visibility: hidden;
-}
-
-.loader {
-    text-align: center;
-}
-
-.loader .material-symbols-outlined {
-    font-size: 48px;
+.dropdown-menu button:first-child {
     color: #4285f4;
-    animation: bounce 1s infinite;
 }
 
-.loader p {
-    margin-top: 16px;
-    color: #666;
-    font-size: 16px;
+.dropdown-menu button:last-child {
+    color: #ff3f56;
 }
 
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+.dropdown-menu button:first-child:hover {
+    background: #f0f7ff;
+}
+
+.dropdown-menu button:last-child:hover {
+    background: #fff5f6;
+}
+
+.dropdown-menu button .material-symbols-outlined {
+    font-size: 20px;
+}
+
+/* إضافة أنيميشن للقائمة المنسدلة */
+@keyframes dropdownShow {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* تحديث أنماط القائمة المنسدلة للهواتف */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        position: fixed;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        top: auto;
+        min-width: auto;
+        border-radius: 16px;
+        padding: 12px;
+        animation: dropdownShowMobile 0.3s ease-out;
+    }
+
+    .dropdown-menu button {
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    .dropdown-menu::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: -1;
+    }
+
+    @keyframes dropdownShowMobile {
+        from {
+            opacity: 0;
+            transform: translateY(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 }
 
 

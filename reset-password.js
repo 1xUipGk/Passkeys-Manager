@@ -1,3 +1,13 @@
+function showMessage(message, type = 'error') {
+    const messageContainer = document.querySelector('.message-container');
+    messageContainer.textContent = message;
+    messageContainer.className = `message-container ${type}`;
+    
+    setTimeout(() => {
+        messageContainer.style.display = 'none';
+    }, 5000);
+}
+
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyC-x3ugd_Bf2kzuKTblZJC3qCbB5T_NY2w",
@@ -28,10 +38,11 @@ resetForm.addEventListener('submit', async (e) => {
     
     try {
         await auth.sendPasswordResetEmail(email);
-        alert('Password reset link sent! Please check your email.');
-        window.location.href = 'login.html';
+        showMessage('Password reset link sent! Please check your email.', 'success');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
     } catch (error) {
-        console.error('Error sending reset email:', error);
         let errorMessage = 'Error sending reset email. Please try again.';
         
         switch (error.code) {
@@ -43,6 +54,6 @@ resetForm.addEventListener('submit', async (e) => {
                 break;
         }
         
-        alert(errorMessage);
+        showMessage(errorMessage);
     }
 }); 

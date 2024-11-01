@@ -192,3 +192,25 @@ body {
 .forgot-password a:hover {
     text-decoration: underline;
 }
+
+.message-container {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    display: none;
+}
+
+.message-container.error {
+    display: block;
+    background: #ffebee;
+    color: #d32f2f;
+    border: 1px solid #ffcdd2;
+}
+
+.message-container.success {
+    display: block;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}

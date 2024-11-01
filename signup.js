@@ -1,3 +1,13 @@
+function showMessage(message, type = 'error') {
+    const messageContainer = document.querySelector('.message-container');
+    messageContainer.textContent = message;
+    messageContainer.className = `message-container ${type}`;
+    
+    setTimeout(() => {
+        messageContainer.style.display = 'none';
+    }, 5000);
+}
+
 // Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyC-x3ugd_Bf2kzuKTblZJC3qCbB5T_NY2w",
@@ -47,14 +57,9 @@ signupForm.addEventListener('submit', async (e) => {
 
     try {
         const result = await auth.createUserWithEmailAndPassword(email, password);
-        
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(result.user));
-        
-        // Redirect to dashboard
+        showMessage('Account created successfully!', 'success');
         window.location.href = 'dashboard.html';
     } catch (error) {
-        console.error('Error signing up:', error);
         let errorMessage = 'Error creating account. Please try again.';
         
         switch (error.code) {
@@ -69,7 +74,7 @@ signupForm.addEventListener('submit', async (e) => {
                 break;
         }
         
-        alert(errorMessage);
+        showMessage(errorMessage);
     }
 });
 

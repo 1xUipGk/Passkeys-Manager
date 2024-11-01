@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Miftahak</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         .loading-screen {
             position: fixed;
             top: 0;
@@ -16,27 +23,52 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
+            padding: 20px;
         }
 
         .loader {
             text-align: center;
+            width: 100%;
+            max-width: 300px;
         }
 
         .loader span {
-            font-size: 48px;
+            font-size: clamp(48px, 10vw, 64px);
             color: #4285f4;
             animation: bounce 1s infinite;
+            display: block;
+            margin-bottom: 20px;
         }
 
         .loader p {
-            margin-top: 16px;
             color: #666;
-            font-size: 16px;
+            font-size: clamp(14px, 4vw, 16px);
+            line-height: 1.4;
+        }
+
+        .logo {
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: clamp(24px, 6vw, 32px);
+            color: #333;
+            margin-top: 10px;
         }
 
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 480px) {
+            .loading-screen {
+                padding: 15px;
+            }
+
+            .loader {
+                max-width: 250px;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
@@ -44,8 +76,11 @@
 <body>
     <div class="loading-screen">
         <div class="loader">
-            <span class="material-symbols-outlined">key</span>
-            <p>Loading...</p>
+            <div class="logo">
+                <span class="material-symbols-outlined">key</span>
+                <h1>Miftahak</h1>
+            </div>
+            <p>Loading your secure vault...</p>
         </div>
     </div>
 
